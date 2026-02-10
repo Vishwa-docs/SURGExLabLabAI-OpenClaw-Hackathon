@@ -39,6 +39,7 @@ export const config = {
   social: {
     twitterApiKey: process.env.TWITTER_API_KEY || '',
     twitterApiSecret: process.env.TWITTER_API_SECRET || '',
+    twitterBearerToken: process.env.TWITTER_BEARER_TOKEN || '',
     slackWebhookUrl: process.env.SLACK_WEBHOOK_URL || '',
     discordWebhookUrl: process.env.DISCORD_WEBHOOK_URL || '',
   },
