@@ -2,7 +2,7 @@
 
 **The Enterprise Trust & Commerce Mesh for Autonomous AI Agents**
 
-> Built for the [SURGE × lablab.ai Hackathon](https://lablab.ai) — $50K prize pool
+> Built for the [SURGE × OpenClaw x lablab.ai Hackathon](https://lablab.ai/ai-hackathons/openclaw-surge-hackathon)
 
 ---
 
@@ -92,6 +92,22 @@ Ridhwan sits between your AI agent and the blockchain, enforcing policies, track
 - **🏥 Agent Micro-Insurance** — Premium calculation based on risk score, automatic claim validation, loss coverage pools
 - **💳 Agent Credit Scoring** — 5-component 1000-point scale (AAA–D grades), credit limits, multi-agent comparison
 
+### Trading, DeFi, Web3 & Real-Time Intelligence (Week 5)
+- **📈 Multi-Asset Trading Engine** — Order book matching (market/limit/stop/take-profit), FIFO PnL accounting, Sortino ratio, agent leaderboard, and position tracking across any token pair
+- **🎯 Prediction Markets** — Binary markets with constant-product AMM, liquidity provisioning, oracle-based resolution, and hedge cost calculation
+- **🌾 DeFi Yield Aggregator** — Multi-protocol yield tracking via DeFiLlama API; strategy creation (single_pool, stable_yield, delta_neutral, leveraged_yield); auto-allocation via risk-parity; rebalance monitoring
+- **💸 Revenue Sharing Engine** — Agent skill marketplace with 70/20/10 splits (creator/platform/referrer); per-use, subscription, and perpetual licensing; payout tracking
+- **🔗 Multi-Chain Manager** — 7-chain infrastructure (Ethereum, Base, Polygon, Arbitrum, BSC, Optimism, Solana) with provider failover and cross-chain monitoring
+- **📜 Smart Contract Verifier** — Bytecode analysis for ERC-20/721/1155 detection, vulnerability scanning (reentrancy, selfdestruct, delegatecall, tx.origin, honeypot), proxy detection, and MiCA/SEC/FATF/SOC2 compliance checks
+- **🔨 Transaction Builder** — Gas estimation, multi-chain tx construction, batch operations, and nonce management
+- **📡 Token Monitor** — Real-time token balance tracking, whale alert detection, and holder analysis
+- **📶 MCP Agent Server** — Model Context Protocol for agent-to-agent discovery, capability negotiation, inter-agent request/response, and communication channels
+- **🔴 WebSocket Event Hub** — Real-time SSE event broadcasting across 10 categories (risk, policy, audit, trade, price, agent, MCP, governance, compliance, system)
+- **📊 Market Trend Engine** — CoinGecko-powered analysis with RSI, MACD, EMA, Bollinger Bands, ATR, OBV; sector rotation detection; Pearson correlation matrices; anomaly alerts
+- **📖 OpenAPI/Swagger** — Full OpenAPI 3.0 spec for all 100+ API endpoints
+- **🐳 Docker** — Multi-stage production build with health checks, non-root execution, and compose orchestration
+- **🏛️ SOC 2 Type II Mapping** — 30+ controls mapped across Security, Availability, Processing Integrity, Confidentiality, and Privacy
+
 ## Tech Stack
 
 | Layer | Technology |
@@ -99,6 +115,7 @@ Ridhwan sits between your AI agent and the blockchain, enforcing policies, track
 | Runtime | Node.js 22+ / TypeScript |
 | Agent Framework | OpenClaw |
 | Blockchain | SURGE on Base (Coinbase L2) |
+| Multi-Chain | Ethereum, Base, Polygon, Arbitrum, BSC, Optimism, Solana |
 | Gasless Txns | x402 Protocol |
 | Database | SQLite (better-sqlite3) |
 | Dashboard | Next.js 14 / React 18 |
@@ -109,6 +126,11 @@ Ridhwan sits between your AI agent and the blockchain, enforcing policies, track
 | LLM | Azure OpenAI (GPT-4o) |
 | Identity | DID (Ed25519) + ZK Proofs |
 | Risk ML | GNN message-passing (TypeScript) |
+| Market Data | CoinGecko, DeFiLlama |
+| Protocol | Model Context Protocol (MCP) |
+| Real-Time | Server-Sent Events (SSE) |
+| Containerization | Docker + Docker Compose |
+| Compliance | SOC 2 Type II, MiCA, FATF |
 
 ## Project Structure
 
@@ -123,9 +145,13 @@ src/
 ├── analytics/                 # Analytics & reporting
 │   ├── risk-dashboard.ts      # Risk dashboard data provider
 │   ├── carbon-tracker.ts      # Carbon footprint tracker
-│   └── audit-export.ts        # Audit packet export
+│   ├── audit-export.ts        # Audit packet export
+│   └── trend-engine.ts        # Market trend analysis (RSI, MACD, Bollinger)
 ├── api/
-│   └── server.ts              # Express REST API (60+ endpoints)
+│   ├── server.ts              # Express REST API (100+ endpoints)
+│   ├── mcp-server.ts          # MCP agent discovery & communication
+│   ├── websocket.ts           # SSE event hub (10 categories)
+│   └── swagger.ts             # OpenAPI 3.0 spec
 ├── dashboard/                 # Next.js 14 governance UI
 ├── economic/                  # Economic intelligence
 │   ├── cost-router.ts         # LLM cost optimization
@@ -133,7 +159,11 @@ src/
 │   ├── procurement-engine.ts  # Agent procurement workflow
 │   ├── escrow-manager.ts      # Multi-party escrow
 │   ├── restaking-optimizer.ts # Dynamic restaking
-│   └── insurance-engine.ts    # Micro-insurance
+│   ├── insurance-engine.ts    # Micro-insurance
+│   ├── trading-engine.ts      # Multi-asset trading (1021 lines)
+│   ├── prediction-market.ts   # Binary prediction markets (739 lines)
+│   ├── defi-aggregator.ts     # DeFi yield aggregation
+│   └── revenue-sharing.ts     # Agent skill marketplace
 ├── governance/                # Governance systems
 │   ├── hold-mechanism.ts      # HOLD circuit breaker
 │   ├── risk-scorer.ts         # Risk scoring engine
@@ -163,19 +193,32 @@ src/
 │   ├── transfers/             # Transfer manager
 │   ├── x402/                  # Gasless transactions
 │   └── action-loop.ts         # Action lifecycle
+├── web3/                      # Multi-chain Web3
+│   ├── multi-chain-manager.ts # 7-chain provider management
+│   ├── contract-interaction.ts# Smart contract calls
+│   ├── token-monitor.ts       # Token balance tracking
+│   ├── transaction-builder.ts # TX construction & gas estimation
+│   └── smart-contract-verifier.ts # Bytecode security analysis
 └── utils/                     # Config & logging
+Dockerfile                     # Multi-stage production build
+docker-compose.yml             # Container orchestration
+Documentation/
+├── SOC2-Control-Mapping.md    # SOC 2 Type II compliance mapping
+├── FINAL-Project-Documentation.md
+└── ...
 demo/
 ├── run-demo.ts                # 9-step feature demo
 └── run-scenarios.ts           # 5-scenario validation
 ```
 
-## API Endpoints (60+)
+## API Endpoints (100+)
 
 ### Core
 | Method | Endpoint | Description |
 |---|---|---|
 | GET | `/api/health` | Health check |
 | GET | `/api/overview` | Full system overview |
+| GET | `/api/docs` | OpenAPI 3.0 spec |
 | GET | `/api/policies` | List all policies |
 | GET | `/api/audit` | Audit log entries |
 | GET | `/api/wallet` | Wallet info |
@@ -200,6 +243,62 @@ demo/
 | GET | `/api/registry/discover` | Discover agents |
 | POST | `/api/privacy/proof/balance` | Generate balance proof |
 | POST | `/api/privacy/proof/compliance` | Generate compliance proof |
+
+### Trading & Markets
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/trading/order` | Place trade order |
+| DELETE | `/api/trading/order/:id` | Cancel order |
+| GET | `/api/trading/positions` | View open positions |
+| GET | `/api/trading/orderbook/:sym` | Order book for symbol |
+| GET | `/api/trading/performance/:id` | Agent performance metrics |
+| POST | `/api/trading/leaderboard` | Agent ranking |
+| POST | `/api/predictions/market` | Create prediction market |
+| POST | `/api/predictions/buy` | Buy YES/NO shares |
+| POST | `/api/predictions/resolve` | Resolve market with oracle |
+
+### DeFi & Revenue
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/defi/pools` | Fetch yield pools (DeFiLlama) |
+| POST | `/api/defi/strategy` | Create yield strategy |
+| POST | `/api/defi/strategy/:id/allocate` | Auto-allocate capital |
+| GET | `/api/defi/best-yield` | Find best yield for amount |
+| POST | `/api/revenue/list-skill` | List skill on marketplace |
+| POST | `/api/revenue/use` | Record skill usage |
+| GET | `/api/revenue/earnings/:id` | Agent earnings report |
+
+### Web3 & Smart Contracts
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/web3/verify` | Full contract verification |
+| POST | `/api/web3/quick-check` | Fast risk check |
+| POST | `/api/web3/batch-verify` | Batch verification |
+| POST | `/api/web3/compare` | Compare two contracts |
+
+### MCP Agent-to-Agent
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/mcp/register` | Register agent |
+| GET | `/api/mcp/discover` | Discover by capability |
+| POST | `/api/mcp/request` | Send inter-agent request |
+| POST | `/api/mcp/channel` | Create communication channel |
+| GET | `/api/mcp/manifest` | MCP capability manifest |
+
+### Real-Time Events
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/events/stream` | SSE event stream |
+| GET | `/api/events` | Query events by category |
+| POST | `/api/events/subscribe` | Subscribe to event categories |
+
+### Market Analytics
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/trends/overview` | Market overview (CoinGecko) |
+| GET | `/api/trends/analyze/:coin` | Technical analysis |
+| GET | `/api/trends/sectors` | Sector rotation analysis |
+| GET | `/api/trends/anomalies` | Price anomaly alerts |
 
 ### Economics
 | Method | Endpoint | Description |
@@ -280,6 +379,14 @@ npm run dev:all
 
 Starts the backend agent on `localhost:3000` and the governance dashboard on `localhost:3001`.
 
+### Docker
+
+```bash
+docker-compose up --build
+```
+
+Runs the full system in a container with health checks and persistent data volume.
+
 ### Available Commands
 
 | Command | Description |
@@ -295,13 +402,13 @@ Starts the backend agent on `localhost:3000` and the governance dashboard on `lo
 
 ## Prize Track Alignment
 
-| Track | RIDHWAN Module |
+| Track | RIDHWAN Modules |
 |---|---|
-| **Agent-to-Agent Economies** | Procurement, Escrow, Insurance, Credit Scoring, Registry |
-| **Internet Capital Markets** | Restaking Optimizer, Treasury Tracker, Token Launcher |
-| **Compliance-Ready Tokenization** | Policy Engine, Audit Export, Carbon Tracker, ZK Privacy |
-| **Community Incentives + Governance** | Voting System, Policy Versioning, HOLD Mechanism |
-| **Moltbook-Native Distribution** | Daily Poster, Build-in-Public Threads, Agent Registry |
+| **Agent-to-Agent Economies ($10K)** | MCP Server, Revenue Sharing, Procurement, Escrow, Insurance, Credit Scoring, Agent Registry, Prediction Markets |
+| **Internet Capital Markets ($10K)** | Trading Engine, DeFi Aggregator, Restaking Optimizer, Treasury Tracker, Token Launcher, Trend Engine |
+| **Compliance-Ready Tokenization ($10K)** | Smart Contract Verifier, Policy Engine, Audit Export, Carbon Tracker, ZK Privacy, SOC 2 Mapping, MiCA/SEC/FATF checks |
+| **Community Incentives + Governance ($10K)** | Voting System, Policy Versioning, HOLD Mechanism, Prediction Markets, Revenue Sharing |
+| **Moltbook-Native Distribution ($10K)** | Daily Poster, Build-in-Public Threads, Agent Registry, MCP Discovery |
 
 ## Team
 

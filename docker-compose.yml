@@ -1,0 +1,56 @@
+version: "3.9"
+
+services:
+  # ── Ridhwan Agent Runtime ──
+  ridhwan:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ridhwan-agent
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:3000"
+      - "${DASHBOARD_PORT:-3001}:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DASHBOARD_PORT=3001
+      - DB_PATH=/app/data/ridhwan.db
+      # SURGE
+      - SURGE_API_URL=${SURGE_API_URL:-https://back.surge.xyz}
+      - SURGE_API_KEY=${SURGE_API_KEY:-}
+      - SURGE_WALLET_ID=${SURGE_WALLET_ID:-}
+      - SURGE_CHAIN_ID=${SURGE_CHAIN_ID:-1}
+      # Moltbook
+      - MOLTBOOK_API_URL=${MOLTBOOK_API_URL:-https://www.moltbook.com/api/v1}
+      - MOLTBOOK_API_KEY=${MOLTBOOK_API_KEY:-}
+      - MOLTBOOK_SUBMOLT=${MOLTBOOK_SUBMOLT:-lablab}
+      # x402 Gasless
+      - X402_ENDPOINT=${X402_ENDPOINT:-}
+      - X402_API_KEY=${X402_API_KEY:-}
+      # LLM
+      - AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT:-}
+      - AZURE_OPENAI_API_KEY=${AZURE_OPENAI_API_KEY:-}
+      - AZURE_OPENAI_DEPLOYMENT=${AZURE_OPENAI_DEPLOYMENT:-}
+      - AZURE_OPENAI_API_VERSION=${AZURE_OPENAI_API_VERSION:-}
+      - HUGGINGFACE_API_KEY=${HUGGINGFACE_API_KEY:-}
+      # Agent
+      - AGENT_NAME=${AGENT_NAME:-ridhwan-agent-01}
+      - AGENT_ID=${AGENT_ID:-}
+    volumes:
+      - ridhwan-data:/app/data
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  ridhwan-data:
+    driver: local

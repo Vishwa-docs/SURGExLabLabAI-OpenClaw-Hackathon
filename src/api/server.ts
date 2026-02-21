@@ -40,6 +40,16 @@ import { auditExport } from '../analytics/audit-export';
 import { restakingOptimizer } from '../economic/restaking-optimizer';
 import { insuranceEngine } from '../economic/insurance-engine';
 import { creditScoringEngine } from '../agent/credit-scoring';
+// Week 5 — Trading, DeFi, Web3, MCP, Analytics
+import { tradingEngine } from '../economic/trading-engine';
+import { predictionMarketEngine } from '../economic/prediction-market';
+import { defiAggregator } from '../economic/defi-aggregator';
+import { revenueSharingEngine } from '../economic/revenue-sharing';
+import { smartContractVerifier } from '../web3/smart-contract-verifier';
+import { trendEngine } from '../analytics/trend-engine';
+import { mcpServer } from './mcp-server';
+import { wsEventHub } from './websocket';
+import { getOpenAPISpec } from './swagger';
 
 export function createApiServer(): express.Express {
   const app = express();
@@ -702,6 +712,592 @@ export function createApiServer(): express.Express {
 
   app.get('/api/credit/stats', (req, res) => {
     res.json(creditScoringEngine.getStats());
+  });
+
+  // ============================================================
+  // WEEK 5 — Trading, DeFi, Web3, MCP, Real-Time & Market Analytics
+  // ============================================================
+
+  // ---- Swagger / OpenAPI ----
+  app.get('/api/docs', (req, res) => {
+    res.json(getOpenAPISpec());
+  });
+
+  // ---- Trading Engine ----
+  app.post('/api/trading/order', (req, res) => {
+    try {
+      const { agentId, symbol, side, type, quantity, price, triggerPrice } = req.body;
+      const order = tradingEngine.placeOrder({
+        agentId: agentId || config.agent.id,
+        symbol: symbol || 'ETH/USDC',
+        side: side || 'buy',
+        type: type || 'market',
+        quantity: quantity || 1,
+        price,
+        triggerPrice,
+      });
+      wsEventHub.emitTradeExecution({ orderId: order.id, symbol: order.symbol, side: order.side, status: order.status });
+      res.json(order);
+    } catch (err) {
+      res.status(400).json({ error: String(err) });
+    }
+  });
+
+  app.delete('/api/trading/order/:orderId', (req, res) => {
+    const order = tradingEngine.cancelOrder(req.params.orderId);
+    if (!order) return res.status(404).json({ error: 'Order not found' });
+    res.json(order);
+  });
+
+  app.get('/api/trading/orders', (req, res) => {
+    const agentId = req.query.agentId as string | undefined;
+    res.json(tradingEngine.getOpenOrders(agentId));
+  });
+
+  app.get('/api/trading/order/:orderId', (req, res) => {
+    const order = tradingEngine.getOrder(req.params.orderId);
+    if (!order) return res.status(404).json({ error: 'Order not found' });
+    res.json(order);
+  });
+
+  app.get('/api/trading/positions', (req, res) => {
+    const agentId = req.query.agentId as string | undefined;
+    res.json(tradingEngine.getPositions(agentId));
+  });
+
+  app.get('/api/trading/history', (req, res) => {
+    const agentId = req.query.agentId as string | undefined;
+    const symbol = req.query.symbol as string | undefined;
+    const limit = parseInt(req.query.limit as string) || 50;
+    res.json(tradingEngine.getTradeHistory(agentId, symbol, limit));
+  });
+
+  app.get('/api/trading/orderbook/:symbol', (req, res) => {
+    const book = tradingEngine.getOrderBook(req.params.symbol);
+    res.json(book);
+  });
+
+  app.get('/api/trading/performance/:agentId', (req, res) => {
+    const metrics = tradingEngine.getPerformanceMetrics(req.params.agentId);
+    res.json(metrics);
+  });
+
+  app.post('/api/trading/leaderboard', (req, res) => {
+    const { agentIds } = req.body;
+    const ranking = tradingEngine.getAgentRanking(agentIds || [config.agent.id]);
+    res.json(ranking);
+  });
+
+  app.get('/api/trading/summary', (req, res) => {
+    res.json(tradingEngine.getSummary());
+  });
+
+  app.post('/api/trading/price', (req, res) => {
+    const { symbol, price } = req.body;
+    tradingEngine.setMarketPrice(symbol || 'ETH/USDC', price || 2000);
+    wsEventHub.emitPriceUpdate(symbol || 'ETH/USDC', price || 2000, 0);
+    res.json({ updated: true, symbol, price });
+  });
+
+  // ---- Prediction Markets ----
+  app.post('/api/predictions/market', (req, res) => {
+    try {
+      const { title, description, type, creator, initialLiquidity, resolutionMethod } = req.body;
+      const market = predictionMarketEngine.createMarket({
+        title: title || 'Will ETH reach $5000 by end of year?',
+        description: description || 'Binary prediction market',
+        type: type || 'price_prediction',
+        creatorId: creator || config.agent.id,
+        initialLiquidity: initialLiquidity || 1000,
+        resolutionMethod: resolutionMethod || 'manual',
+      });
+      res.json(market);
+    } catch (err) {
+      res.status(400).json({ error: String(err) });
+    }
+  });
+
+  app.get('/api/predictions/markets', (req, res) => {
+    const status = req.query.status as any;
+    res.json(predictionMarketEngine.getAllMarkets(status));
+  });
+
+  app.get('/api/predictions/market/:marketId', (req, res) => {
+    const market = predictionMarketEngine.getMarketInfo(req.params.marketId);
+    if (!market) return res.status(404).json({ error: 'Market not found' });
+    res.json(market);
+  });
+
+  app.post('/api/predictions/buy', (req, res) => {
+    try {
+      const { marketId, participantId, side, shares } = req.body;
+      const trade = predictionMarketEngine.buyShares({
+        marketId,
+        participantId: participantId || config.agent.id,
+        side: side || 'YES',
+        shares: shares || 10,
+      });
+      res.json(trade);
+    } catch (err) {
+      res.status(400).json({ error: String(err) });
+    }
+  });
+
+  app.post('/api/predictions/sell', (req, res) => {
+    try {
+      const { marketId, participantId, side, shares } = req.body;
+      const trade = predictionMarketEngine.sellShares({
+        marketId,
+        participantId: participantId || config.agent.id,
+        side: side || 'YES',
+        shares: shares || 1,
+      });
+      res.json(trade);
+    } catch (err) {
+      res.status(400).json({ error: String(err) });
+    }
+  });
+
+  app.post('/api/predictions/resolve', (req, res) => {
+    try {
+      const { marketId, outcome, oracleData, resolvedBy } = req.body;
+      const resolution = predictionMarketEngine.resolveMarket({
+        marketId,
+        outcome,
+        oracleData: oracleData || { source: 'manual', value: outcome ? 1 : 0, fetchedAt: Date.now() },
+        resolvedBy: resolvedBy || config.agent.id,
+      });
+      wsEventHub.emitGovernanceEvent('market_resolved', { marketId, outcome });
+      res.json(resolution);
+    } catch (err) {
+      res.status(400).json({ error: String(err) });
+    }
+  });
+
+  app.get('/api/predictions/positions/:participantId', (req, res) => {
+    res.json(predictionMarketEngine.getUserPositions(req.params.participantId));
+  });
+
+  app.get('/api/predictions/history', (req, res) => {
+    const marketId = req.query.marketId as string | undefined;
+    const limit = parseInt(req.query.limit as string) || 50;
+    res.json(predictionMarketEngine.getMarketHistory(marketId, limit));
+  });
+
+  app.get('/api/predictions/summary', (req, res) => {
+    res.json(predictionMarketEngine.getSummary());
+  });
+
+  // ---- DeFi Aggregator ----
+  app.get('/api/defi/pools', async (req, res) => {
+    try {
+      const chain = req.query.chain as any;
+      const pools = await defiAggregator.fetchPools(chain);
+      res.json(pools);
+    } catch (err) {
+      res.status(500).json({ error: String(err) });
+    }
+  });
+
+  app.get('/api/defi/protocols', async (req, res) => {
+    try {
+      const protocols = await defiAggregator.fetchProtocols();
+      res.json(protocols);
+    } catch (err) {
+      res.status(500).json({ error: String(err) });
+    }
+  });
+
+  app.post('/api/defi/strategy', (req, res) => {
+    try {
+      const { name, type, totalAllocation, minApy, maxRisk, agentId, rebalanceThreshold } = req.body;
+      const strategy = defiAggregator.createStrategy({
+        name: name || 'Default Strategy',
+        type: type || 'stable_yield',
+        totalAllocation: totalAllocation || 10000,
+        minApy: minApy || 3,
+        maxRisk: maxRisk || 50,
+        agentId: agentId || config.agent.id,
+        rebalanceThreshold,
+      });
+      res.json(strategy);
+    } catch (err) {
+      res.status(400).json({ error: String(err) });
+    }
+  });
+
+  app.post('/api/defi/strategy/:id/allocate', async (req, res) => {
+    try {
+      const strategy = await defiAggregator.autoAllocate(req.params.id);
+      res.json(strategy);
+    } catch (err) {
+      res.status(400).json({ error: String(err) });
+    }
+  });
+
+  app.get('/api/defi/strategy/:id/rebalance', (req, res) => {
+    const suggestion = defiAggregator.checkRebalance(req.params.id);
+    res.json(suggestion || { rebalanceNeeded: false });
+  });
+
+  app.get('/api/defi/strategies', (req, res) => {
+    const agentId = req.query.agentId as string | undefined;
+    res.json(defiAggregator.getStrategies(agentId));
+  });
+
+  app.post('/api/defi/search', (req, res) => {
+    const { chain, minApy, maxRisk, minTvl } = req.body;
+    const pools = defiAggregator.searchPools({ chain, minApy, maxRisk, minTvl });
+    res.json(pools);
+  });
+
+  app.get('/api/defi/best-yield', (req, res) => {
+    const amount = parseFloat(req.query.amount as string) || 1000;
+    const chains = req.query.chain ? [req.query.chain as any] : undefined;
+    const maxRisk = parseFloat(req.query.maxRisk as string) || undefined;
+    res.json(defiAggregator.getBestYield(amount, { chains, maxRisk }));
+  });
+
+  app.get('/api/defi/snapshot', (req, res) => {
+    res.json(defiAggregator.getSnapshot());
+  });
+
+  // ---- Revenue Sharing ----
+  app.post('/api/revenue/list-skill', (req, res) => {
+    try {
+      const { skillId, name, description, category, pricePerUse, tier, creatorId, licenseType, tags } = req.body;
+      const listing = revenueSharingEngine.listSkill({
+        skillId: skillId || 'skill-' + Date.now(),
+        name: name || 'Unnamed Skill',
+        description: description || '',
+        category: category || 'analytics',
+        pricePerUse: pricePerUse || 0.1,
+        tier: tier || 'basic',
+        creatorId: creatorId || config.agent.id,
+        licenseType: licenseType || 'per_use',
+        tags: tags || [],
+      });
+      res.json(listing);
+    } catch (err) {
+      res.status(400).json({ error: String(err) });
+    }
+  });
+
+  app.get('/api/revenue/listings', (req, res) => {
+    const { creatorId, category, tier, activeOnly } = req.query;
+    res.json(revenueSharingEngine.getListings({
+      creatorId: creatorId as string,
+      category: category as string,
+      tier: tier as any,
+      activeOnly: activeOnly !== 'false',
+    }));
+  });
+
+  app.post('/api/revenue/use', (req, res) => {
+    try {
+      const { listingId, buyerId, referrerId } = req.body;
+      const usage = revenueSharingEngine.recordUsage({
+        listingId,
+        buyerId: buyerId || config.agent.id,
+        referrerId,
+      });
+      wsEventHub.emitAgentAction(buyerId || config.agent.id, 'skill_use', 'completed', { listingId });
+      res.json(usage);
+    } catch (err) {
+      res.status(400).json({ error: String(err) });
+    }
+  });
+
+  app.post('/api/revenue/subscribe', (req, res) => {
+    try {
+      const { listingId, buyerId, months, autoRenew } = req.body;
+      const sub = revenueSharingEngine.subscribe({
+        buyerId: buyerId || config.agent.id,
+        listingId,
+        months: months || 1,
+        autoRenew,
+      });
+      res.json(sub);
+    } catch (err) {
+      res.status(400).json({ error: String(err) });
+    }
+  });
+
+  app.get('/api/revenue/earnings/:agentId', (req, res) => {
+    res.json(revenueSharingEngine.getEarnings(req.params.agentId));
+  });
+
+  app.post('/api/revenue/payout', (req, res) => {
+    try {
+      const { agentId, method } = req.body;
+      const payout = revenueSharingEngine.requestPayout(agentId || config.agent.id, method);
+      res.json(payout);
+    } catch (err) {
+      res.status(400).json({ error: String(err) });
+    }
+  });
+
+  app.get('/api/revenue/payouts', (req, res) => {
+    const agentId = req.query.agentId as string | undefined;
+    res.json(revenueSharingEngine.getPayouts(agentId));
+  });
+
+  app.get('/api/revenue/stats', (req, res) => {
+    res.json(revenueSharingEngine.getMarketplaceStats());
+  });
+
+  app.get('/api/revenue/demo', (req, res) => {
+    res.json(revenueSharingEngine.runDemo());
+  });
+
+  // ---- Smart Contract Verifier ----
+  app.post('/api/web3/verify', async (req, res) => {
+    try {
+      const { contractAddress, chain } = req.body;
+      const report = await smartContractVerifier.verifyContract(
+        contractAddress || '0x0000000000000000000000000000000000000000',
+        chain || 'base'
+      );
+      wsEventHub.emitComplianceAlert(contractAddress, 'smart_contract', report.riskScore < 50, `Risk: ${report.riskScore}/100`);
+      res.json(report);
+    } catch (err) {
+      res.status(500).json({ error: String(err) });
+    }
+  });
+
+  app.post('/api/web3/quick-check', async (req, res) => {
+    try {
+      const { contractAddress, chain } = req.body;
+      const result = await smartContractVerifier.quickCheck(contractAddress, chain);
+      res.json(result);
+    } catch (err) {
+      res.status(500).json({ error: String(err) });
+    }
+  });
+
+  app.post('/api/web3/batch-verify', async (req, res) => {
+    try {
+      const { contracts } = req.body;
+      const reports = await smartContractVerifier.batchVerify(contracts || []);
+      res.json(reports);
+    } catch (err) {
+      res.status(500).json({ error: String(err) });
+    }
+  });
+
+  app.post('/api/web3/compare', async (req, res) => {
+    try {
+      const { address1, address2, chain } = req.body;
+      const result = await smartContractVerifier.compareContracts(address1, address2, chain);
+      res.json(result);
+    } catch (err) {
+      res.status(500).json({ error: String(err) });
+    }
+  });
+
+  app.get('/api/web3/reports', (req, res) => {
+    const chain = req.query.chain as string | undefined;
+    res.json(smartContractVerifier.getReports(chain));
+  });
+
+  app.get('/api/web3/report/:id', (req, res) => {
+    const report = smartContractVerifier.getReport(req.params.id);
+    if (!report) return res.status(404).json({ error: 'Report not found' });
+    res.json(report);
+  });
+
+  app.get('/api/web3/stats', (req, res) => {
+    res.json(smartContractVerifier.getStats());
+  });
+
+  // ---- Trend Engine ----
+  app.get('/api/trends/overview', async (req, res) => {
+    try {
+      const overview = await trendEngine.getMarketOverview();
+      res.json(overview);
+    } catch (err) {
+      res.status(500).json({ error: String(err) });
+    }
+  });
+
+  app.get('/api/trends/analyze/:coinId', async (req, res) => {
+    try {
+      const trend = await trendEngine.analyzeTrend(req.params.coinId);
+      res.json(trend);
+    } catch (err) {
+      res.status(500).json({ error: String(err) });
+    }
+  });
+
+  app.get('/api/trends/price-history/:coinId', async (req, res) => {
+    try {
+      const days = parseInt(req.query.days as string) || 30;
+      const history = await trendEngine.fetchPriceHistory(req.params.coinId, days);
+      res.json(history);
+    } catch (err) {
+      res.status(500).json({ error: String(err) });
+    }
+  });
+
+  app.post('/api/trends/correlation', async (req, res) => {
+    try {
+      const { coinIds } = req.body;
+      const matrix = await trendEngine.getCorrelationMatrix(coinIds || ['bitcoin', 'ethereum']);
+      res.json(matrix);
+    } catch (err) {
+      res.status(500).json({ error: String(err) });
+    }
+  });
+
+  app.get('/api/trends/defi', async (req, res) => {
+    try {
+      const trends = await trendEngine.getDeFiTrends();
+      res.json(trends);
+    } catch (err) {
+      res.status(500).json({ error: String(err) });
+    }
+  });
+
+  app.get('/api/trends/sectors', async (req, res) => {
+    try {
+      const sectors = await trendEngine.getSectorPerformance();
+      res.json(sectors);
+    } catch (err) {
+      res.status(500).json({ error: String(err) });
+    }
+  });
+
+  app.get('/api/trends/anomalies', (req, res) => {
+    const limit = parseInt(req.query.limit as string) || 20;
+    res.json(trendEngine.getAnomalies(limit));
+  });
+
+  app.get('/api/trends/cached', (req, res) => {
+    res.json(trendEngine.getTrends());
+  });
+
+  // ---- MCP Server (Agent-to-Agent) ----
+  app.post('/api/mcp/register', (req, res) => {
+    try {
+      const { agentId, name, did, endpoint, capabilities } = req.body;
+      // Normalize capabilities: accept strings or MCPCapability objects
+      const normalizedCaps = (capabilities || []).map((c: any) =>
+        typeof c === 'string'
+          ? { name: c, description: c, version: '1.0.0', category: 'general' as const, costPerCall: 0, rateLimit: 100 }
+          : c
+      );
+      const agent = mcpServer.registerAgent({
+        id: agentId || 'agent-' + Date.now(),
+        name: name || 'Unknown Agent',
+        did: did || 'did:ridhwan:' + agentId,
+        endpoint: endpoint || 'http://localhost:3000',
+        capabilities: normalizedCaps,
+      });
+      wsEventHub.emitMCPRequest(agentId || 'unknown', config.agent.id, 'register');
+      res.json(agent);
+    } catch (err) {
+      res.status(400).json({ error: String(err) });
+    }
+  });
+
+  app.get('/api/mcp/discover', (req, res) => {
+    const capability = req.query.capability as string;
+    const minTrust = parseFloat(req.query.minTrust as string) || undefined;
+    res.json(mcpServer.discoverAgents({
+      capability,
+      minTrustScore: minTrust,
+    }));
+  });
+
+  app.get('/api/mcp/agent/:agentId', (req, res) => {
+    const agent = mcpServer.getAgent(req.params.agentId);
+    if (!agent) return res.status(404).json({ error: 'Agent not found in MCP registry' });
+    res.json(agent);
+  });
+
+  app.get('/api/mcp/capabilities', (req, res) => {
+    res.json(mcpServer.listCapabilities());
+  });
+
+  app.post('/api/mcp/request', (req, res) => {
+    try {
+      const { fromAgent, toAgent, capability, params } = req.body;
+      const response = mcpServer.sendRequest(
+        fromAgent || config.agent.id,
+        toAgent,
+        capability,
+        params || {}
+      );
+      wsEventHub.emitMCPRequest(fromAgent || config.agent.id, toAgent, capability);
+      res.json(response);
+    } catch (err) {
+      res.status(400).json({ error: String(err) });
+    }
+  });
+
+  app.post('/api/mcp/channel', (req, res) => {
+    try {
+      const { agents, purpose } = req.body;
+      const channel = mcpServer.createChannel(agents || [], purpose || 'general');
+      res.json(channel);
+    } catch (err) {
+      res.status(400).json({ error: String(err) });
+    }
+  });
+
+  app.post('/api/mcp/channel/:channelId/message', (req, res) => {
+    try {
+      const { from, type, content } = req.body;
+      const message = mcpServer.sendMessage(
+        req.params.channelId,
+        from || config.agent.id,
+        type || 'data',
+        content || {}
+      );
+      res.json(message);
+    } catch (err) {
+      res.status(400).json({ error: String(err) });
+    }
+  });
+
+  app.get('/api/mcp/channel/:channelId/messages', (req, res) => {
+    const limit = parseInt(req.query.limit as string) || 50;
+    res.json(mcpServer.getChannelMessages(req.params.channelId, limit));
+  });
+
+  app.get('/api/mcp/stats', (req, res) => {
+    res.json(mcpServer.getStats());
+  });
+
+  app.get('/api/mcp/manifest', (req, res) => {
+    res.json(mcpServer.getManifest());
+  });
+
+  // ---- WebSocket / SSE Events ----
+  app.get('/api/events/stream', wsEventHub.sseMiddleware());
+
+  app.get('/api/events', (req, res) => {
+    const category = req.query.category as any;
+    const severity = req.query.severity as any;
+    const limit = parseInt(req.query.limit as string) || 50;
+    const since = req.query.since as string | undefined;
+    res.json(wsEventHub.getEvents({ category, severity, limit, since }));
+  });
+
+  app.get('/api/events/stats', (req, res) => {
+    res.json(wsEventHub.getStats());
+  });
+
+  app.post('/api/events/subscribe', (req, res) => {
+    const { clientId, categories } = req.body;
+    const client = wsEventHub.registerClient(clientId);
+    const sub = wsEventHub.subscribe(client.id, categories || ['system']);
+    res.json({ client, subscription: sub });
+  });
+
+  app.delete('/api/events/client/:clientId', (req, res) => {
+    wsEventHub.removeClient(req.params.clientId);
+    res.json({ removed: true });
   });
 
   return app;

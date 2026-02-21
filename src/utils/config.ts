@@ -4,8 +4,21 @@
 
 import dotenv from 'dotenv';
 import path from 'path';
+import fs from 'fs';
 
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+// Try multiple possible .env locations to handle both ts-node and compiled node execution
+const possibleEnvPaths = [
+  path.resolve(__dirname, '../../.env'),     // ts-node: src/utils/../../.env = .env
+  path.resolve(__dirname, '../../../.env'),   // compiled: dist/src/utils/../../../.env = .env
+  path.resolve(process.cwd(), '.env'),       // fallback: cwd
+];
+
+const envPath = possibleEnvPaths.find(p => fs.existsSync(p));
+if (envPath) {
+  dotenv.config({ path: envPath });
+} else {
+  dotenv.config(); // default
+}
 
 export const config = {
   agent: {
