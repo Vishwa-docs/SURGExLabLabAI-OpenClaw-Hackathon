@@ -49,7 +49,7 @@ Ridhwan sits between your AI agent and the blockchain, enforcing policies, track
          │                │                        │
     ┌────┴────┐    ┌──────┴──────┐          ┌─────┴───────┐
     │  Base   │    │  Dashboard  │          │  Moltbook   │
-    │(L2 EVM) │    │ (Next.js)   │          │Distribution │
+    │(L2 EVM) │    │(HTML/CSS/JS)│          │Distribution │
     └─────────┘    └─────────────┘          └─────────────┘
 ```
 
@@ -60,7 +60,7 @@ Ridhwan sits between your AI agent and the blockchain, enforcing policies, track
 - **💰 SURGE Wallet Integration** — Server-managed wallets on Base (Coinbase L2), token launch, and trading via OpenClaw
 - **📊 Immutable Audit Ledger** — Every action recorded in SQLite with full receipts and compliance metadata
 - **🔗 Hook Interception System** — Pre/post action processing pipeline for policy enforcement and audit logging
-- **📱 Next.js Governance Dashboard** — Real-time monitoring, policy management, wallet view, and audit trail
+- **📱 Web Dashboard with Demo Mode** — Real-time monitoring dashboard with 12 interactive sections and a **Demo Mode toggle** that switches between rich pre-populated dummy data (for presentations) and live API calls hitting 100+ real backend endpoints
 - **⛽ x402 Gasless Transactions** — Agent-sponsored gas via the x402 open payment protocol
 - **🦞 Moltbook Integration** — Automated daily build updates posted to the lablab submolt
 - **🐦 X/Twitter Thread Generator** — Auto-generated build-in-public threads with daily stats
@@ -118,7 +118,7 @@ Ridhwan sits between your AI agent and the blockchain, enforcing policies, track
 | Multi-Chain | Ethereum, Base, Polygon, Arbitrum, BSC, Optimism, Solana |
 | Gasless Txns | x402 Protocol |
 | Database | SQLite (better-sqlite3) |
-| Dashboard | Next.js 14 / React 18 |
+| Dashboard | Vanilla HTML/CSS/JS (zero-dependency, served from Express) |
 | Validation | Zod |
 | Logging | Winston |
 | Social | Moltbook API, X/Twitter API v2 |
@@ -152,7 +152,11 @@ src/
 │   ├── mcp-server.ts          # MCP agent discovery & communication
 │   ├── websocket.ts           # SSE event hub (10 categories)
 │   └── swagger.ts             # OpenAPI 3.0 spec
-├── dashboard/                 # Next.js 14 governance UI
+├── dashboard/                 # Legacy dashboard (unused)
+public/                        # Web dashboard UI
+├── index.html                 # Dashboard HTML
+├── styles.css                 # Dark-theme CSS (2,700+ lines)
+└── app.js                     # Dashboard JS (1,300+ lines)
 ├── economic/                  # Economic intelligence
 │   ├── cost-router.ts         # LLM cost optimization
 │   ├── treasury-tracker.ts    # Multi-chain treasury
@@ -324,81 +328,143 @@ demo/
 
 ### Prerequisites
 
-- Node.js 22+
-- npm 11+
-- OpenClaw CLI (`npm install -g openclaw@latest`)
+- **Node.js 18+** (22+ recommended) — [Download](https://nodejs.org)
+- **npm 9+** (comes with Node.js)
+- **Git** — [Download](https://git-scm.com)
+- **OpenClaw CLI** (optional) — `npm install -g openclaw@latest`
 
-### Installation
+### 1. Clone & Install
 
 ```bash
 git clone https://github.com/Vishwa-docs/SURGExLabLabAI-OpenClaw-Hackathon.git
 cd SURGExLabLabAI-OpenClaw-Hackathon
 npm install
-cd src/dashboard && npm install && cd ../..
 ```
 
-### Configuration
-
-Copy the example environment file and fill in your keys:
+### 2. Configure Environment
 
 ```bash
 cp .env.example .env
 ```
 
-Required keys:
-| Key | Where to get it | Cost |
-|---|---|---|
-| `SURGE_API_KEY` | [app.surge.xyz](https://app.surge.xyz) | Free |
-| `MOLTBOOK_API_KEY` | Auto-generated via `npm run moltbook:register` | Free |
-| `AZURE_OPENAI_*` | [Azure Portal](https://portal.azure.com) | Free tier available |
-| `HUGGINGFACE_API_KEY` | [huggingface.co](https://huggingface.co) | Free |
-| `LANGFUSE_*` | [cloud.langfuse.com](https://cloud.langfuse.com) | Free tier |
-| `TWITTER_*` | [developer.x.com](https://developer.x.com) | Free tier |
+Edit `.env` with your API keys:
 
-### Run the Demo
+| Key | Where to get it | Cost | Required? |
+|---|---|---|---|
+| `SURGE_API_KEY` | [app.surge.xyz](https://app.surge.xyz) → Profile → API Keys | Free | Yes (or runs in dry-run mode) |
+| `MOLTBOOK_API_KEY` | Run `npm run moltbook:register` | Free | For Moltbook posting |
+| `AZURE_OPENAI_*` | [Azure Portal](https://portal.azure.com) | Free tier available | For LLM features |
+| `HUGGINGFACE_API_KEY` | [huggingface.co](https://huggingface.co) | Free | For LLM fallback |
+| `LANGFUSE_*` | [cloud.langfuse.com](https://cloud.langfuse.com) | Free tier | For observability |
+| `TWITTER_*` | [developer.x.com](https://developer.x.com) | Free tier | For X thread posting |
+
+> **Cost Safety:** All services are either free or run in dry-run/simulation mode. No real money is spent. SURGE wallets use free Base Sepolia testnet funding.
+
+### 3. Compile & Run
 
 ```bash
-npm run demo
+# Compile TypeScript (0 errors expected)
+npx tsc
+
+# Start the server
+node dist/src/index.js
 ```
 
-Runs all 9 features end-to-end: policy engine, audit ledger, wallet ops, token launch, transfers, hooks, receipts, x402, and X thread generation.
+You'll see the startup banner, then **open your browser to [http://localhost:3000](http://localhost:3000)** to access the full dashboard UI.
 
-### Run Scenarios
+The dashboard features:
+- **Demo Mode (ON by default)** — starts with rich pre-populated enterprise-grade dummy data for presentations
+- **Live Mode** — toggle Demo Mode OFF to hit 100+ real backend API endpoints in real-time
+- 12 interactive sections (Overview, Policies, Risk & Fraud, Trading, DeFi, Governance, Identity, Audit, Web3, Actions, Events, Trends)
+- Real-time SSE event streaming
+- Interactive forms for trading, governance proposals, DID creation, contract verification, and more
+- Auto-refreshing data with live system status
+
+### 4. Open the Dashboard
+
+Open **http://localhost:3000** in your browser. The dashboard starts in **Demo Mode** with rich pre-populated data. Click the **"Toggle Demo Mode"** button in the sidebar footer to switch between demo data and live backend API calls.
+
+The full web dashboard loads instantly with:
+- **Overview** — System health, actions executed/blocked, wallet, budget, recent actions
+- **Policies** — Toggle and inspect all 5 governance policies
+- **Risk & Fraud** — GNN fraud detection, risk gauge, HOLD mechanism, trend history
+- **Trading** — Place orders (market/limit/stop), view order book, positions, performance, leaderboard
+- **DeFi** — Browse yield pools, create strategies, find best yield
+- **Governance** — Create proposals, cast weighted votes, run governance demo
+- **Identity** — Create DIDs, register agents, view credit scores, MCP discovery
+- **Audit** — Immutable audit log, download compliance packet, carbon report, ESG score
+- **Web3** — Verify smart contracts (7 chains), vulnerability scanning
+- **Live Events** — Real-time SSE stream across 10 event categories
+- **Trends** — Market overview (CoinGecko), coin analysis (RSI/MACD/Bollinger), anomaly alerts
+
+Alternatively, test via CLI:
+```bash
+curl -s http://localhost:3000/api/health | jq
+curl -s http://localhost:3000/api/overview | jq
+bash scripts/test-all.sh   # 86 automated tests
+```
+
+### 5. Alternative Run Methods
 
 ```bash
+# One-command start (installs, compiles, runs everything)
+./scripts/start.sh
+
+# Backend-only (port 3000)
+npm run dev
+
+# Backend + Dashboard (port 3000)
+npm run dev:all
+
+# Docker (full system)
+docker compose up --build
+
+# Run the 9-step feature demo
+npm run demo
+
+# Run all 5 governance scenarios
 npm run scenario:all
 ```
-
-Runs all 5 governance scenarios: normal transfer, large transfer HOLD, malicious transfer block, skill scanner, and multi-step workflow.
-
-### Run the Full System
-
-```bash
-npm run dev:all
-```
-
-Starts the backend agent on `localhost:3000` and the governance dashboard on `localhost:3001`.
-
-### Docker
-
-```bash
-docker-compose up --build
-```
-
-Runs the full system in a container with health checks and persistent data volume.
 
 ### Available Commands
 
 | Command | Description |
 |---|---|
+| `npm run dev` | Start backend agent (port 3000) |
+| `npm run dev:all` | Start agent (dashboard included at port 3000) |
+| `npm run build` | Compile TypeScript |
 | `npm run demo` | Run the 9-step feature demo |
 | `npm run scenario:all` | Run all 5 governance scenarios |
-| `npm run dev` | Start backend agent (port 3000) |
-| `npm run dev:dashboard` | Start dashboard UI (port 3001) |
-| `npm run dev:all` | Start both agent + dashboard |
 | `npm run moltbook:register` | Register agent on Moltbook |
 | `npm run moltbook:post` | Post build update to lablab |
-| `npm run build` | Compile TypeScript |
+| `npm run heartbeat` | Run a single heartbeat post |
+
+### Key URLs (when running)
+
+| URL | Description |
+|---|---|
+| http://localhost:3000 | **Web Dashboard** (12 interactive sections) |
+| http://localhost:3000/api/health | Health check |
+| http://localhost:3000/api/overview | Full system overview |
+| http://localhost:3000/api/docs | OpenAPI 3.0 / Swagger spec |
+| http://localhost:3000/api/events/stream | SSE real-time event stream |
+| http://localhost:3000/api/mcp/manifest | MCP agent capability manifest |
+
+## Demo Mode
+
+The dashboard includes a **Demo Mode toggle** designed for presentations and demos:
+
+| Mode | Indicator | Data Source | Use Case |
+|---|---|---|---|
+| **Demo Mode (ON)** | Orange "DEMO MODE" badge | Pre-populated dummy data | Presentations, video recording, showcasing all features |
+| **Live Mode (OFF)** | Green "LIVE MODE" badge | Real backend API (100+ endpoints) | Production use, proving backend is real |
+
+**How it works:**
+- The dashboard starts in Demo Mode by default
+- Click **"Toggle Demo Mode"** in the sidebar footer to switch
+- Demo data includes realistic enterprise scenarios across all 12 sections: wallet balances, risk scores, trade orders, GNN fraud graphs, governance proposals, DID credentials, yield pools, smart contract verifications, and more
+- When you toggle to Live Mode, the dashboard makes real API calls to the backend — proving the entire system is functional, not just mocks
+- **Demo tip:** During a presentation, keep Demo Mode ON for a polished walkthrough, then briefly toggle to Live Mode to prove the backend is real, then toggle back
 
 ## Prize Track Alignment
 
@@ -410,9 +476,31 @@ Runs the full system in a container with health checks and persistent data volum
 | **Community Incentives + Governance ($10K)** | Voting System, Policy Versioning, HOLD Mechanism, Prediction Markets, Revenue Sharing |
 | **Moltbook-Native Distribution ($10K)** | Daily Poster, Build-in-Public Threads, Agent Registry, MCP Discovery |
 
+## Autonomous Agent Features
+
+Ridhwan runs as a **self-operating agent**:
+
+- **Heartbeat Scheduler** — Posts status updates to Moltbook every 24 hours automatically
+- **Daily Poster** — Generates build summaries from audit data and publishes autonomously
+- **Risk Monitoring** — Continuously scores risk and flags anomalies
+- **Policy Enforcement** — Every action goes through the governance pipeline without human intervention
+- **Event Streaming** — Real-time SSE broadcasting across 10 event categories
+- **MCP Discovery** — Other agents can discover and communicate with Ridhwan via the MCP protocol
+
+When the server starts, the agent:
+1. Creates/connects to SURGE wallet
+2. Registers hooks (policy + audit)
+3. Starts heartbeat scheduler (auto Moltbook posting)
+4. Starts daily poster
+5. Registers itself on MCP with 8 capabilities
+6. Seeds trading engine with market data
+7. Pre-fetches DeFi yield pools
+8. Opens API server on port 3000
+9. Begins streaming events via SSE
+
 ## Team
 
-Built by a 5-member team for the SURGE × lablab.ai Hackathon (4-week sprint).
+Built for the SURGE × lablab.ai OpenClaw Hackathon.
 
 ## License
 

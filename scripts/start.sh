@@ -65,7 +65,7 @@ npx tsc --skipLibCheck 2>/dev/null || {
 # ── 7. Initialize database ─────────────────────────────────
 echo ""
 echo "💾 Initializing database..."
-node dist/policy-engine/db/init.js 2>/dev/null || {
+node dist/src/policy-engine/db/init.js 2>/dev/null || {
   echo "⚠️  DB init skipped (may already exist)"
 }
 
@@ -85,5 +85,5 @@ echo ""
 npx concurrently \
   --names "API,DASH" \
   --prefix-colors "cyan,magenta" \
-  "node dist/index.js" \
+  "node dist/src/index.js" \
   "cd src/dashboard && npx next dev -p 3001"

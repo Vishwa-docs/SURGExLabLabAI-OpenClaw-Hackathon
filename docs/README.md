@@ -17,35 +17,48 @@ For the **full project documentation**, see:
 npm install
 
 # 2. Configure environment
-cp .env.example .env   # Edit .env with your API keys
+cp .env.example .env   # Edit .env with your API keys (SURGE_API_KEY is free)
 
 # 3. Compile TypeScript
 npx tsc
 
-# 4. Start full system (API :3000 + Dashboard :3001)
-npm run dev:all
+# 4. Start the server (API + Dashboard on :3000 — agent starts automatically)
+node dist/src/index.js
 
-# 5. Run governance demo (9 steps)
+# 5. Open browser → http://localhost:3000 for the full dashboard UI
+
+# 6. Or verify via CLI
+curl http://localhost:3000/api/health | jq
+curl http://localhost:3000/api/overview | jq
+
+# 6. Run the full 86-endpoint test suite
+bash scripts/test-all.sh
+
+# 7. Run governance demo (9 steps)
 npm run demo
 
-# 6. Run all governance scenarios (5 scenarios)
+# 8. Run all governance scenarios (5 scenarios)
 npm run scenario:all
 ```
 
-### Docker
+### Alternative Methods
 ```bash
+# One-command start (installs, compiles, runs everything)
+./scripts/start.sh
+
+# Docker
 docker compose up --build
 ```
 
 ### Key URLs
 | URL | Description |
 |---|---|
+| http://localhost:3000 | **Web Dashboard** (12 interactive sections) |
 | http://localhost:3000/api/health | Health check |
 | http://localhost:3000/api/overview | Full system overview |
 | http://localhost:3000/api/docs | OpenAPI 3.0 / Swagger spec |
 | http://localhost:3000/api/events/stream | SSE real-time event stream |
 | http://localhost:3000/api/mcp/manifest | MCP agent manifest |
-| http://localhost:3001 | Next.js analytics dashboard |
 
 ---
 

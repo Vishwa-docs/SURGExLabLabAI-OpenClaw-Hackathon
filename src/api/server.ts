@@ -6,6 +6,7 @@
 // ============================================================
 
 import express from 'express';
+import path from 'path';
 import { config } from '../utils/config';
 import logger from '../utils/logger';
 import { policyStore } from '../policy-engine/policy-store';
@@ -62,6 +63,15 @@ export function createApiServer(): express.Express {
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     if (req.method === 'OPTIONS') return res.sendStatus(200);
     next();
+  });
+
+  // Serve dashboard UI from /public
+  const publicDir = path.resolve(process.cwd(), 'public');
+  app.use(express.static(publicDir));
+
+  // Root route → dashboard
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(publicDir, 'index.html'));
   });
 
   // ---- Health ----
