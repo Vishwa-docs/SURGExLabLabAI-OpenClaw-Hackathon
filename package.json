@@ -12,6 +12,8 @@
     "db:init": "ts-node src/policy-engine/db/init.ts",
     "heartbeat": "ts-node src/agent/heartbeat/scheduler.ts",
     "demo": "ts-node demo/run-demo.ts",
+    "scenario": "ts-node demo/run-scenarios.ts",
+    "scenario:all": "ts-node demo/run-scenarios.ts --all",
     "moltbook:register": "ts-node scripts/register-moltbook.ts",
     "moltbook:post": "ts-node scripts/post-to-lablab.ts",
     "test": "jest",

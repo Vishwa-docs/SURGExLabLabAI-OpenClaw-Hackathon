@@ -16,6 +16,14 @@ import { agentRuntime } from '../agent/agent-runtime';
 import { moltbookClient } from '../moltbook/moltbook-client';
 import { dailyPoster } from '../moltbook/daily-poster';
 import { xThreadGenerator } from '../social/x-thread-generator';
+// Week 2 imports
+import { riskScorer } from '../governance/risk-scorer';
+import { holdMechanism } from '../governance/hold-mechanism';
+import { surgeActionLoop } from '../surge/action-loop';
+import { costRouter } from '../economic/cost-router';
+import { treasuryTracker } from '../economic/treasury-tracker';
+import { skillScanner } from '../security/skill-scanner';
+import { scenarioRunner } from '../scenarios/scenario-runner';
 
 export function createApiServer(): express.Express {
   const app = express();
@@ -186,6 +194,153 @@ export function createApiServer(): express.Express {
     );
     const validation = xThreadGenerator.validateSubmission(thread, demoLink || '');
     res.json({ thread, formatted: xThreadGenerator.formatForDisplay(thread), validation });
+  });
+
+  // ============================================================
+  // WEEK 2 — Governance, Economic & Security Endpoints
+  // ============================================================
+
+  // ---- Risk Scorer ----
+  app.get('/api/risk/assess', (req, res) => {
+    const { actionClass, amount, toAddress } = req.query;
+    const assessment = riskScorer.assess({
+      actionClass: (actionClass as string) || 'transfer',
+      amountUsd: parseFloat(amount as string) || 10,
+      toAddress: (toAddress as string) || '0x0',
+      agentId: config.agent.id,
+    });
+    res.json(assessment);
+  });
+
+  app.get('/api/risk/trend', (req, res) => {
+    const window = parseInt(req.query.window as string) || 10;
+    res.json(riskScorer.getRiskTrend(window));
+  });
+
+  app.get('/api/risk/stats', (req, res) => {
+    res.json(riskScorer.getStats());
+  });
+
+  // ---- HOLD Mechanism ----
+  app.get('/api/hold/stats', (req, res) => {
+    res.json(holdMechanism.getStats());
+  });
+
+  app.get('/api/hold/active', (req, res) => {
+    res.json(holdMechanism.getActiveHolds());
+  });
+
+  // ---- Action Loop ----
+  app.post('/api/actions/transfer', async (req, res) => {
+    try {
+      const { to, amount, currency } = req.body;
+      const result = await surgeActionLoop.executeTransfer({ to, amount, currency });
+      res.json(result);
+    } catch (err) {
+      res.status(500).json({ error: String(err) });
+    }
+  });
+
+  app.post('/api/actions/token-launch', async (req, res) => {
+    try {
+      const { name, ticker, description, initialBuyEth } = req.body;
+      const result = await surgeActionLoop.executeTokenLaunch({ name, ticker, description, initialBuyEth });
+      res.json(result);
+    } catch (err) {
+      res.status(500).json({ error: String(err) });
+    }
+  });
+
+  app.get('/api/actions/summary', (req, res) => {
+    res.json(surgeActionLoop.getSummary());
+  });
+
+  // ---- Cost Router ----
+  app.get('/api/cost-router/providers', (req, res) => {
+    res.json(costRouter.getProviders());
+  });
+
+  app.get('/api/cost-router/usage', (req, res) => {
+    res.json(costRouter.getUsage());
+  });
+
+  app.post('/api/cost-router/route', async (req, res) => {
+    try {
+      const { prompt, taskType, maxTokens } = req.body;
+      const response = await costRouter.route({
+        prompt: prompt || 'Hello',
+        taskType: taskType || 'chat',
+        maxTokens: maxTokens || 256,
+      });
+      res.json(response);
+    } catch (err) {
+      res.status(500).json({ error: String(err) });
+    }
+  });
+
+  // ---- Treasury ----
+  app.get('/api/treasury/snapshot', (req, res) => {
+    res.json(treasuryTracker.getSnapshot());
+  });
+
+  app.get('/api/treasury/stats', (req, res) => {
+    res.json(treasuryTracker.getStats());
+  });
+
+  // ---- Skill Scanner ----
+  app.post('/api/skills/scan', (req, res) => {
+    try {
+      const { skillName, code, manifest } = req.body;
+      const result = skillScanner.scan(skillName || 'unknown', code || '');
+      if (manifest) {
+        const validation = skillScanner.validateManifest(manifest, result);
+        return res.json({ ...result, manifestValidation: validation });
+      }
+      res.json(result);
+    } catch (err) {
+      res.status(500).json({ error: String(err) });
+    }
+  });
+
+  app.get('/api/skills/scan/demo', (req, res) => {
+    const safe = skillScanner.scanDemoSkill();
+    const malicious = skillScanner.scanMaliciousDemo();
+    res.json({ safe, malicious });
+  });
+
+  app.get('/api/skills/stats', (req, res) => {
+    res.json(skillScanner.getStats());
+  });
+
+  // ---- Scenario Runner ----
+  app.get('/api/scenarios', (req, res) => {
+    res.json(scenarioRunner.listScenarios());
+  });
+
+  app.post('/api/scenarios/:id/run', async (req, res) => {
+    try {
+      const result = await scenarioRunner.runScenario(req.params.id);
+      res.json(result);
+    } catch (err) {
+      res.status(500).json({ error: String(err) });
+    }
+  });
+
+  app.post('/api/scenarios/run-all', async (req, res) => {
+    try {
+      const results = await scenarioRunner.runAll();
+      res.json({
+        total: results.length,
+        passed: results.filter(r => r.allPassed).length,
+        results,
+      });
+    } catch (err) {
+      res.status(500).json({ error: String(err) });
+    }
+  });
+
+  app.get('/api/scenarios/history', (req, res) => {
+    res.json(scenarioRunner.getHistory());
   });
 
   return app;
