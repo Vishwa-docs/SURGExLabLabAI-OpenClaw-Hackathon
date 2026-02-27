@@ -58,8 +58,9 @@ export class XThreadGenerator {
       `• SURGE on Base (Coinbase L2)\n` +
       `• Policy Engine (TypeScript + Zod)\n` +
       `• SQLite Audit Ledger\n` +
-      `• Next.js Governance Dashboard\n` +
-      `• x402 Gasless Transactions`
+      `• Real-Time Dashboard (HTML/CSS/JS)\n` +
+      `• Multi-Agent Orchestrator (5 sub-agents)\n` +
+      `• x402 Autonomous Commerce`
     );
 
     // Tweet 4: Why it matters

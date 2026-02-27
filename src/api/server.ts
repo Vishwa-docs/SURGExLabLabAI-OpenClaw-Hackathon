@@ -51,6 +51,11 @@ import { trendEngine } from '../analytics/trend-engine';
 import { mcpServer } from './mcp-server';
 import { wsEventHub } from './websocket';
 import { getOpenAPISpec } from './swagger';
+// Week 6 — Multi-Agent Orchestrator, x402 Commerce, Trust Delegation, Narrative Posts
+import { orchestrator } from '../agent/orchestrator';
+import { x402Commerce } from '../agent/x402-commerce';
+import { trustDelegation } from '../identity/trust-delegation';
+import { narrativeGenerator } from '../moltbook/narrative-generator';
 
 export function createApiServer(): express.Express {
   const app = express();
@@ -1308,6 +1313,227 @@ export function createApiServer(): express.Express {
   app.delete('/api/events/client/:clientId', (req, res) => {
     wsEventHub.removeClient(req.params.clientId);
     res.json({ removed: true });
+  });
+
+  // ================================================================
+  // Week 6 — Multi-Agent Orchestrator, x402 Commerce, Trust, Narrative
+  // ================================================================
+
+  // ---- Multi-Agent Orchestrator ----
+
+  app.get('/api/orchestrator/agents', (req, res) => {
+    res.json(orchestrator.getSubAgents());
+  });
+
+  app.get('/api/orchestrator/stats', (req, res) => {
+    res.json(orchestrator.getStats());
+  });
+
+  app.get('/api/orchestrator/tasks', (req, res) => {
+    const limit = parseInt(req.query.limit as string) || 20;
+    res.json(orchestrator.getRecentTasks(limit));
+  });
+
+  app.get('/api/orchestrator/pipelines', (req, res) => {
+    const limit = parseInt(req.query.limit as string) || 10;
+    res.json(orchestrator.getRecentPipelines(limit));
+  });
+
+  app.get('/api/orchestrator/pipeline-templates', (req, res) => {
+    res.json(orchestrator.getPipelineTemplates());
+  });
+
+  app.post('/api/orchestrator/task', async (req, res) => {
+    try {
+      const { taskType, params, priority } = req.body;
+      const result = await orchestrator.routeTask(
+        taskType || 'risk_scan',
+        params || {},
+        priority || 'medium'
+      );
+      res.json(result);
+    } catch (err) {
+      res.status(400).json({ error: String(err) });
+    }
+  });
+
+  app.post('/api/orchestrator/pipeline', async (req, res) => {
+    try {
+      const { pipelineName, params } = req.body;
+      const result = await orchestrator.executePipeline(
+        pipelineName || 'transfer',
+        `Pipeline: ${pipelineName || 'transfer'}`,
+        params || {}
+      );
+      res.json(result);
+    } catch (err) {
+      res.status(400).json({ error: String(err) });
+    }
+  });
+
+  // ---- x402 Autonomous Commerce ----
+
+  app.get('/api/x402/resources', (req, res) => {
+    res.json(x402Commerce.listResources());
+  });
+
+  app.get('/api/x402/stats', (req, res) => {
+    res.json(x402Commerce.getStats());
+  });
+
+  app.get('/api/x402/payments', (req, res) => {
+    const limit = parseInt(req.query.limit as string) || 20;
+    res.json(x402Commerce.getRecentPayments(limit));
+  });
+
+  app.get('/api/x402/transactions', (req, res) => {
+    const limit = parseInt(req.query.limit as string) || 20;
+    res.json(x402Commerce.getTransactions(limit));
+  });
+
+  app.post('/api/x402/request', (req, res) => {
+    try {
+      const { resourceId, agentId, walletBalance } = req.body;
+      const payment = x402Commerce.createPaymentRequest(
+        resourceId,
+        agentId || 'external-agent',
+        walletBalance || 1000
+      );
+      if (payment.status === 'rejected') {
+        return res.status(402).json({
+          error: 'Payment Required',
+          payment,
+          resource: x402Commerce.getResource(resourceId),
+        });
+      }
+      res.json(payment);
+    } catch (err) {
+      res.status(400).json({ error: String(err) });
+    }
+  });
+
+  app.post('/api/x402/pay', (req, res) => {
+    try {
+      const { paymentId, txHash } = req.body;
+      const result = x402Commerce.recordPayment(paymentId, txHash || `0x${Date.now().toString(16)}`);
+      res.json(result);
+    } catch (err) {
+      res.status(400).json({ error: String(err) });
+    }
+  });
+
+  app.post('/api/x402/verify', (req, res) => {
+    try {
+      const { paymentId } = req.body;
+      const result = x402Commerce.verifyAndDeliver(paymentId);
+      res.json(result);
+    } catch (err) {
+      res.status(400).json({ error: String(err) });
+    }
+  });
+
+  app.post('/api/x402/purchase', (req, res) => {
+    try {
+      const { resourceId, agentId, walletBalance } = req.body;
+      const result = x402Commerce.purchaseResource(
+        resourceId,
+        agentId || 'external-agent',
+        walletBalance || 1000
+      );
+      res.json(result);
+    } catch (err) {
+      res.status(400).json({ error: String(err) });
+    }
+  });
+
+  // ---- Trust Delegation ----
+
+  app.get('/api/trust/capabilities', (req, res) => {
+    res.json(trustDelegation.getAllCapabilities());
+  });
+
+  app.get('/api/trust/delegations', (req, res) => {
+    res.json(trustDelegation.getActiveDelegations());
+  });
+
+  app.get('/api/trust/stats', (req, res) => {
+    res.json(trustDelegation.getStats());
+  });
+
+  app.get('/api/trust/agent/:agentId/capabilities', (req, res) => {
+    res.json(trustDelegation.getAgentCapabilities(req.params.agentId));
+  });
+
+  app.get('/api/trust/agent/:agentId/chain', (req, res) => {
+    res.json(trustDelegation.getTrustChain(req.params.agentId));
+  });
+
+  app.post('/api/trust/check', (req, res) => {
+    try {
+      const { agentId, capability } = req.body;
+      res.json(trustDelegation.checkPermission(agentId, capability));
+    } catch (err) {
+      res.status(400).json({ error: String(err) });
+    }
+  });
+
+  app.post('/api/trust/delegate', (req, res) => {
+    try {
+      const { delegatorId, delegateId, capabilities, constraints } = req.body;
+      const result = trustDelegation.delegate(
+        delegatorId,
+        delegateId,
+        capabilities || [],
+        constraints || {}
+      );
+      res.json(result);
+    } catch (err) {
+      res.status(400).json({ error: String(err) });
+    }
+  });
+
+  app.post('/api/trust/revoke', (req, res) => {
+    try {
+      const { delegationId, revokedBy } = req.body;
+      const result = trustDelegation.revoke(delegationId, revokedBy || 'owner:daver');
+      res.json(result);
+    } catch (err) {
+      res.status(400).json({ error: String(err) });
+    }
+  });
+
+  // ---- Narrative Moltbook Posts ----
+
+  app.post('/api/moltbook/narrative', (req, res) => {
+    try {
+      const post = narrativeGenerator.generateFromCurrentState();
+      res.json(post);
+    } catch (err) {
+      res.status(500).json({ error: String(err) });
+    }
+  });
+
+  app.post('/api/moltbook/narrative/conversation', (req, res) => {
+    try {
+      const { agents, topic, events } = req.body;
+      const post = narrativeGenerator.generateAgentConversation(
+        agents || [
+          { id: 'risk-guard', role: 'Risk Assessment' },
+          { id: 'policy-bot', role: 'Policy Enforcement' },
+          { id: 'trade-runner', role: 'Trade Execution' },
+          { id: 'compliance-ai', role: 'Compliance Auditing' },
+        ],
+        topic || 'Incoming Transfer Evaluation',
+        events || ['Checking budget constraints...', 'Running secondary GNN scan...', 'All clear — executing.']
+      );
+      res.json(post);
+    } catch (err) {
+      res.status(500).json({ error: String(err) });
+    }
+  });
+
+  app.get('/api/moltbook/narrative/history', (req, res) => {
+    res.json(narrativeGenerator.getPostHistory());
   });
 
   return app;

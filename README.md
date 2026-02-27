@@ -15,37 +15,43 @@ Ridhwan sits between your AI agent and the blockchain, enforcing policies, track
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                        RIDHWAN MESH                                 │
-│                                                                     │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐           │
-│  │  Policy   │  │  Budget  │  │  Audit   │  │   Risk   │           │
-│  │  Engine   │  │ Tracker  │  │  Ledger  │  │  Scorer  │           │
-│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘           │
-│       │              │              │              │                 │
-│  ┌────┴──────────────┴──────────────┴──────────────┴───────┐       │
-│  │              Hook Interception Pipeline                  │       │
-│  └──────────────────────┬──────────────────────────────────┘       │
-│                         │                                           │
-│  ┌──────────────────────┴──────────────────────────────────┐       │
-│  │                   Agent Runtime                          │       │
-│  └──┬────────┬────────┬────────┬────────┬────────┬────────┘       │
-│     │        │        │        │        │        │                  │
-│  ┌──┴──┐ ┌──┴──┐ ┌───┴──┐ ┌──┴───┐ ┌──┴──┐ ┌──┴──────┐          │
-│  │SURGE│ │ x402│ │Molt- │ │ DID  │ │ GNN │ │Credit  │          │
-│  │Wallt│ │ Gas │ │ book │ │Ident.│ │Fraud│ │ Score  │          │
-│  └─────┘ └─────┘ └──────┘ └──────┘ └─────┘ └────────┘          │
-│                                                                     │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐           │
-│  │Governance│  │ Escrow & │  │Insurance │  │Restaking │           │
-│  │ Voting   │  │ Procure  │  │ Engine   │  │Optimizer │           │
-│  └──────────┘  └──────────┘  └──────────┘  └──────────┘           │
-│                                                                     │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐           │
-│  │  Carbon  │  │  Audit   │  │  Risk    │  │ Policy   │           │
-│  │ Tracker  │  │  Export  │  │Dashboard │  │Versioning│           │
-│  └──────────┘  └──────────┘  └──────────┘  └──────────┘           │
-└─────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────┐
+│                           RIDHWAN MESH v2.0                             │
+│                                                                          │
+│  ┌──────────────────────────────────────────────────────────────────┐    │
+│  │                  Multi-Agent Orchestrator                        │    │
+│  │   risk-guard · policy-bot · trade-runner · compliance-ai         │    │
+│  │                    trust-broker                                  │    │
+│  └────────────────────────┬─────────────────────────────────────────┘    │
+│                           │                                              │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  │
+│  │  Policy   │  │  Budget  │  │  Audit   │  │   Risk   │  │  Trust   │  │
+│  │  Engine   │  │ Tracker  │  │  Ledger  │  │  Scorer  │  │Delegatn  │  │
+│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘  │
+│       │              │              │              │              │       │
+│  ┌────┴──────────────┴──────────────┴──────────────┴──────────────┴──┐   │
+│  │              Hook Interception Pipeline                           │   │
+│  └──────────────────────┬────────────────────────────────────────────┘   │
+│                         │                                                │
+│  ┌──────────────────────┴────────────────────────────────────────┐      │
+│  │                    Agent Runtime                               │      │
+│  └──┬────────┬────────┬────────┬────────┬────────┬────────┬─────┘      │
+│     │        │        │        │        │        │        │              │
+│  ┌──┴──┐ ┌──┴──┐ ┌───┴──┐ ┌──┴───┐ ┌──┴──┐ ┌──┴──────┐ ┌──┴──┐      │
+│  │SURGE│ │ x402│ │Molt- │ │ DID  │ │ GNN │ │Credit  │ │x402 │      │
+│  │Wallt│ │ Gas │ │ book │ │Ident.│ │Fraud│ │ Score  │ │Comm.│      │
+│  └─────┘ └─────┘ └──────┘ └──────┘ └─────┘ └────────┘ └─────┘      │
+│                                                                          │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  │
+│  │Governance│  │ Escrow & │  │Insurance │  │Restaking │  │Narrative │  │
+│  │ Voting   │  │ Procure  │  │ Engine   │  │Optimizer │  │Generator │  │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────┘  └──────────┘  │
+│                                                                          │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  │
+│  │  Carbon  │  │  Audit   │  │  Risk    │  │ Policy   │  │  Agent   │  │
+│  │ Tracker  │  │  Export  │  │Dashboard │  │Versioning│  │ Swarm UI │  │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────┘  └──────────┘  │
+└──────────────────────────────────────────────────────────────────────────┘
          │                │                        │
     ┌────┴────┐    ┌──────┴──────┐          ┌─────┴───────┐
     │  Base   │    │  Dashboard  │          │  Moltbook   │
@@ -60,7 +66,7 @@ Ridhwan sits between your AI agent and the blockchain, enforcing policies, track
 - **💰 SURGE Wallet Integration** — Server-managed wallets on Base (Coinbase L2), token launch, and trading via OpenClaw
 - **📊 Immutable Audit Ledger** — Every action recorded in SQLite with full receipts and compliance metadata
 - **🔗 Hook Interception System** — Pre/post action processing pipeline for policy enforcement and audit logging
-- **📱 Web Dashboard with Demo Mode** — Real-time monitoring dashboard with 12 interactive sections and a **Demo Mode toggle** that switches between rich pre-populated dummy data (for presentations) and live API calls hitting 100+ real backend endpoints
+- **📱 Web Dashboard with Demo Mode** — Real-time monitoring dashboard with 15 interactive sections and a **Demo Mode toggle** that switches between rich pre-populated dummy data (for presentations) and live API calls hitting 130+ real backend endpoints
 - **⛽ x402 Gasless Transactions** — Agent-sponsored gas via the x402 open payment protocol
 - **🦞 Moltbook Integration** — Automated daily build updates posted to the lablab submolt
 - **🐦 X/Twitter Thread Generator** — Auto-generated build-in-public threads with daily stats
@@ -104,9 +110,15 @@ Ridhwan sits between your AI agent and the blockchain, enforcing policies, track
 - **📶 MCP Agent Server** — Model Context Protocol for agent-to-agent discovery, capability negotiation, inter-agent request/response, and communication channels
 - **🔴 WebSocket Event Hub** — Real-time SSE event broadcasting across 10 categories (risk, policy, audit, trade, price, agent, MCP, governance, compliance, system)
 - **📊 Market Trend Engine** — CoinGecko-powered analysis with RSI, MACD, EMA, Bollinger Bands, ATR, OBV; sector rotation detection; Pearson correlation matrices; anomaly alerts
-- **📖 OpenAPI/Swagger** — Full OpenAPI 3.0 spec for all 100+ API endpoints
+- **📖 OpenAPI/Swagger** — Full OpenAPI 3.0 spec for all 130+ API endpoints
 - **🐳 Docker** — Multi-stage production build with health checks, non-root execution, and compose orchestration
 - **🏛️ SOC 2 Type II Mapping** — 30+ controls mapped across Security, Availability, Processing Integrity, Confidentiality, and Privacy
+
+### Multi-Agent Mesh & Autonomous Commerce (Week 6)
+- **🤖 Multi-Agent Orchestrator** — 5 specialized sub-agents (risk-guard, policy-bot, trade-runner, compliance-ai, trust-broker) with automatic task routing across 20+ task types, pipeline execution for multi-step workflows (transfer, trade, token launch, x402 payment), and real-time agent coordination
+- **💳 x402 Autonomous Commerce** — HTTP 402 Payment Required protocol for agent-to-agent paid services (fraud-scan, risk-report, compliance-packet, contract-verify, market-intel, credit-score) with automatic cost-benefit evaluation, payment verification, and resource delivery
+- **🔑 Trust Delegation System** — Depth-limited, constraint-scoped capability chains where permissions follow people, not software. 10 capabilities (transfer, trade, read-balance, risk-scan, contract-deploy, governance-vote, compliance-audit, moltbook-post, agent-spawn, x402-pay) with cascade revocation
+- **📖 LLM Narrative Moltbook Posts** — Story-driven, first-person agent voice for Moltbook posts with dramatic openers, 5 narrative types (risk, trade, x402, orchestrator, trust), agent-to-agent conversations, and 5 writing styles (dramatic, technical, reflective, triumphant, cautionary)
 
 ## Tech Stack
 
@@ -140,6 +152,8 @@ src/
 │   ├── agent-runtime.ts       # Core runtime engine
 │   ├── types.ts               # Agent action types
 │   ├── credit-scoring.ts      # Agent credit scoring engine
+│   ├── orchestrator.ts        # Multi-agent orchestrator (5 sub-agents)
+│   ├── x402-commerce.ts       # x402 autonomous commerce engine
 │   ├── heartbeat/             # Cron scheduler
 │   └── hooks/                 # Pre/post action hooks
 ├── analytics/                 # Analytics & reporting
@@ -148,15 +162,15 @@ src/
 │   ├── audit-export.ts        # Audit packet export
 │   └── trend-engine.ts        # Market trend analysis (RSI, MACD, Bollinger)
 ├── api/
-│   ├── server.ts              # Express REST API (100+ endpoints)
+│   ├── server.ts              # Express REST API (130+ endpoints)
 │   ├── mcp-server.ts          # MCP agent discovery & communication
 │   ├── websocket.ts           # SSE event hub (10 categories)
 │   └── swagger.ts             # OpenAPI 3.0 spec
 ├── dashboard/                 # Legacy dashboard (unused)
 public/                        # Web dashboard UI
-├── index.html                 # Dashboard HTML
-├── styles.css                 # Dark-theme CSS (2,700+ lines)
-└── app.js                     # Dashboard JS (1,300+ lines)
+├── index.html                 # Dashboard HTML (15 sections)
+├── styles.css                 # Dark-theme CSS (2,900+ lines)
+└── app.js                     # Dashboard JS (1,900+ lines)
 ├── economic/                  # Economic intelligence
 │   ├── cost-router.ts         # LLM cost optimization
 │   ├── treasury-tracker.ts    # Multi-chain treasury
@@ -176,8 +190,12 @@ public/                        # Web dashboard UI
 ├── identity/                  # Decentralized identity
 │   ├── did-manager.ts         # DID management
 │   ├── agent-registry.ts      # Agent discovery
-│   └── zk-privacy.ts          # Zero-knowledge proofs
+│   ├── zk-privacy.ts          # Zero-knowledge proofs
+│   └── trust-delegation.ts    # Trust delegation chains
 ├── moltbook/                  # Moltbook integration
+│   ├── moltbook-client.ts     # Full Moltbook API client
+│   ├── daily-poster.ts        # Automated daily updates
+│   └── narrative-generator.ts # LLM narrative post generator
 ├── policy-engine/             # Core governance
 │   ├── engine.ts              # Policy evaluation
 │   ├── audit-ledger.ts        # Immutable audit log
@@ -215,7 +233,7 @@ demo/
 └── run-scenarios.ts           # 5-scenario validation
 ```
 
-## API Endpoints (100+)
+## API Endpoints (130+)
 
 ### Core
 | Method | Endpoint | Description |
@@ -324,6 +342,48 @@ demo/
 | GET | `/api/audit/export` | Full audit packet |
 | GET | `/api/fraud/demo` | GNN fraud detection demo |
 
+### Multi-Agent Orchestrator
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/orchestrator/agents` | List all sub-agents |
+| GET | `/api/orchestrator/stats` | Orchestrator statistics |
+| GET | `/api/orchestrator/tasks` | Recent task history |
+| GET | `/api/orchestrator/pipelines` | Recent pipeline executions |
+| GET | `/api/orchestrator/pipeline-templates` | Available pipeline templates |
+| POST | `/api/orchestrator/task` | Dispatch task to sub-agent |
+| POST | `/api/orchestrator/pipeline` | Execute multi-step pipeline |
+
+### x402 Autonomous Commerce
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/x402/resources` | List priced resources |
+| GET | `/api/x402/stats` | Commerce statistics |
+| GET | `/api/x402/payments` | Recent payment history |
+| GET | `/api/x402/transactions` | Transaction ledger |
+| POST | `/api/x402/request` | Create payment request |
+| POST | `/api/x402/pay` | Record a payment |
+| POST | `/api/x402/verify` | Verify and deliver resource |
+| POST | `/api/x402/purchase` | Full purchase flow |
+
+### Trust Delegation
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/trust/capabilities` | List all capabilities |
+| GET | `/api/trust/delegations` | View all delegations |
+| GET | `/api/trust/stats` | Trust system statistics |
+| GET | `/api/trust/agent/:agentId/capabilities` | Agent's capabilities |
+| GET | `/api/trust/agent/:agentId/chain` | Agent's trust chain |
+| POST | `/api/trust/check` | Check permission |
+| POST | `/api/trust/delegate` | Create delegation |
+| POST | `/api/trust/revoke` | Revoke delegation (cascade) |
+
+### Narrative Moltbook Posts
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/moltbook/narrative` | Generate narrative post |
+| POST | `/api/moltbook/narrative/conversation` | Generate agent conversation |
+| GET | `/api/moltbook/narrative/history` | Narrative history |
+
 ## Getting Started
 
 ### Prerequisites
@@ -374,10 +434,10 @@ You'll see the startup banner, then **open your browser to [http://localhost:300
 
 The dashboard features:
 - **Demo Mode (ON by default)** — starts with rich pre-populated enterprise-grade dummy data for presentations
-- **Live Mode** — toggle Demo Mode OFF to hit 100+ real backend API endpoints in real-time
-- 12 interactive sections (Overview, Policies, Risk & Fraud, Trading, DeFi, Governance, Identity, Audit, Web3, Actions, Events, Trends)
+- **Live Mode** — toggle Demo Mode OFF to hit 130+ real backend API endpoints in real-time
+- 15 interactive sections (Overview, Policies, Risk & Fraud, Trading, DeFi, Governance, Identity, Audit, Web3, Actions, Events, Trends, Agent Swarm, x402 Commerce, Trust Delegation)
 - Real-time SSE event streaming
-- Interactive forms for trading, governance proposals, DID creation, contract verification, and more
+- Interactive forms for trading, governance proposals, DID creation, contract verification, task dispatch, x402 purchases, and more
 - Auto-refreshing data with live system status
 
 ### 4. Open the Dashboard
@@ -396,6 +456,10 @@ The full web dashboard loads instantly with:
 - **Web3** — Verify smart contracts (7 chains), vulnerability scanning
 - **Live Events** — Real-time SSE stream across 10 event categories
 - **Trends** — Market overview (CoinGecko), coin analysis (RSI/MACD/Bollinger), anomaly alerts
+- **Agent Swarm** — Multi-agent orchestrator with 5 sub-agents, task dispatch, pipeline execution
+- **x402 Commerce** — Autonomous agent economy, purchase resources, cost-benefit analysis
+- **Trust Delegation** — Capability chains, permission verification, cascade revocation
+- **Moltbook** — Narrative posts, agent conversations, storytelling engine
 
 Alternatively, test via CLI:
 ```bash
@@ -443,7 +507,7 @@ npm run scenario:all
 
 | URL | Description |
 |---|---|
-| http://localhost:3000 | **Web Dashboard** (12 interactive sections) |
+| http://localhost:3000 | **Web Dashboard** (15 interactive sections) |
 | http://localhost:3000/api/health | Health check |
 | http://localhost:3000/api/overview | Full system overview |
 | http://localhost:3000/api/docs | OpenAPI 3.0 / Swagger spec |
@@ -457,12 +521,12 @@ The dashboard includes a **Demo Mode toggle** designed for presentations and dem
 | Mode | Indicator | Data Source | Use Case |
 |---|---|---|---|
 | **Demo Mode (ON)** | Orange "DEMO MODE" badge | Pre-populated dummy data | Presentations, video recording, showcasing all features |
-| **Live Mode (OFF)** | Green "LIVE MODE" badge | Real backend API (100+ endpoints) | Production use, proving backend is real |
+| **Live Mode (OFF)** | Green "LIVE MODE" badge | Real backend API (130+ endpoints) | Production use, proving backend is real |
 
 **How it works:**
 - The dashboard starts in Demo Mode by default
 - Click **"Toggle Demo Mode"** in the sidebar footer to switch
-- Demo data includes realistic enterprise scenarios across all 12 sections: wallet balances, risk scores, trade orders, GNN fraud graphs, governance proposals, DID credentials, yield pools, smart contract verifications, and more
+- Demo data includes realistic enterprise scenarios across all 15 sections: wallet balances, risk scores, trade orders, GNN fraud graphs, governance proposals, DID credentials, yield pools, smart contract verifications, agent swarm coordination, x402 commerce transactions, trust delegation chains, and more
 - When you toggle to Live Mode, the dashboard makes real API calls to the backend — proving the entire system is functional, not just mocks
 - **Demo tip:** During a presentation, keep Demo Mode ON for a polished walkthrough, then briefly toggle to Live Mode to prove the backend is real, then toggle back
 
@@ -470,33 +534,40 @@ The dashboard includes a **Demo Mode toggle** designed for presentations and dem
 
 | Track | RIDHWAN Modules |
 |---|---|
-| **Agent-to-Agent Economies ($10K)** | MCP Server, Revenue Sharing, Procurement, Escrow, Insurance, Credit Scoring, Agent Registry, Prediction Markets |
-| **Internet Capital Markets ($10K)** | Trading Engine, DeFi Aggregator, Restaking Optimizer, Treasury Tracker, Token Launcher, Trend Engine |
-| **Compliance-Ready Tokenization ($10K)** | Smart Contract Verifier, Policy Engine, Audit Export, Carbon Tracker, ZK Privacy, SOC 2 Mapping, MiCA/SEC/FATF checks |
-| **Community Incentives + Governance ($10K)** | Voting System, Policy Versioning, HOLD Mechanism, Prediction Markets, Revenue Sharing |
-| **Moltbook-Native Distribution ($10K)** | Daily Poster, Build-in-Public Threads, Agent Registry, MCP Discovery |
+| **Agent-to-Agent Economies ($10K)** | MCP Server, Revenue Sharing, Procurement, Escrow, Insurance, Credit Scoring, Agent Registry, Prediction Markets, **Multi-Agent Orchestrator**, **x402 Autonomous Commerce**, **Trust Delegation** |
+| **Internet Capital Markets ($10K)** | Trading Engine, DeFi Aggregator, Restaking Optimizer, Treasury Tracker, Token Launcher, Trend Engine, **x402 Commerce Protocol** |
+| **Compliance-Ready Tokenization ($10K)** | Smart Contract Verifier, Policy Engine, Audit Export, Carbon Tracker, ZK Privacy, SOC 2 Mapping, MiCA/SEC/FATF checks, **Trust Delegation Chains** |
+| **Community Incentives + Governance ($10K)** | Voting System, Policy Versioning, HOLD Mechanism, Prediction Markets, Revenue Sharing, **Multi-Agent Orchestrator** |
+| **Moltbook-Native Distribution ($10K)** | Daily Poster, Build-in-Public Threads, Agent Registry, MCP Discovery, **LLM Narrative Posts**, **Agent-to-Agent Conversations** |
 
 ## Autonomous Agent Features
 
 Ridhwan runs as a **self-operating agent**:
 
+- **Multi-Agent Orchestrator** — Coordinates 5 specialized sub-agents (risk-guard, policy-bot, trade-runner, compliance-ai, trust-broker) autonomously
 - **Heartbeat Scheduler** — Posts status updates to Moltbook every 24 hours automatically
 - **Daily Poster** — Generates build summaries from audit data and publishes autonomously
+- **Narrative Generator** — Creates story-driven, first-person Moltbook posts and agent-to-agent conversations
 - **Risk Monitoring** — Continuously scores risk and flags anomalies
 - **Policy Enforcement** — Every action goes through the governance pipeline without human intervention
+- **x402 Commerce** — Agents buy and sell services autonomously using the HTTP 402 protocol
+- **Trust Delegation** — Permissions cascade through delegation chains with automatic scope enforcement
 - **Event Streaming** — Real-time SSE broadcasting across 10 event categories
 - **MCP Discovery** — Other agents can discover and communicate with Ridhwan via the MCP protocol
 
 When the server starts, the agent:
 1. Creates/connects to SURGE wallet
 2. Registers hooks (policy + audit)
-3. Starts heartbeat scheduler (auto Moltbook posting)
-4. Starts daily poster
-5. Registers itself on MCP with 8 capabilities
-6. Seeds trading engine with market data
-7. Pre-fetches DeFi yield pools
-8. Opens API server on port 3000
-9. Begins streaming events via SSE
+3. Boots multi-agent orchestrator (5 sub-agents)
+4. Initializes trust delegation chains
+5. Starts x402 commerce engine (6 priced resources)
+6. Starts heartbeat scheduler (auto Moltbook posting)
+7. Starts daily poster with narrative generator
+8. Registers itself on MCP with 8 capabilities
+9. Seeds trading engine with market data
+10. Pre-fetches DeFi yield pools
+11. Opens API server on port 3000
+12. Begins streaming events via SSE
 
 ## Team
 
@@ -508,4 +579,128 @@ This project is licensed under the MIT License — see [LICENSE](LICENSE) for de
 
 ---
 
-*Built with 🔥 for the SURGE × OpenClaw Hackathon | Building in Public*
+## Deployment Guide
+
+Ridhwan can be deployed in multiple configurations — from a single local process to a containerized production setup.
+
+### Option 1: Local Development (Recommended for Demos)
+
+The fastest way to get running. Everything serves from a single Express process on port 3000.
+
+```bash
+# 1. Install dependencies
+npm install
+
+# 2. Set up environment
+cp .env.example .env
+# Edit .env with API keys (SURGE_API_KEY is free, others optional)
+
+# 3. Compile & start
+npx tsc
+node dist/src/index.js
+
+# Dashboard available at http://localhost:3000
+# API endpoints at http://localhost:3000/api/*
+```
+
+**What starts:**
+- Express server serving 130+ API endpoints
+- Static file server for the dashboard (HTML/CSS/JS)
+- SSE event stream on `/api/events/stream`
+- MCP agent server on `/api/mcp/*`
+- Multi-agent orchestrator with 5 sub-agents
+- x402 commerce engine with 6 priced resources
+- Trust delegation manager
+- Heartbeat scheduler (Moltbook auto-posting)
+- All 20+ modules initialize in ~2 seconds
+
+### Option 2: Docker (Production)
+
+Uses a multi-stage Dockerfile that compiles TypeScript, then copies only `dist/` and `node_modules/` into a minimal runtime image.
+
+```bash
+# Build and run with Docker Compose
+docker compose up --build
+
+# Or standalone
+docker build -t ridhwan .
+docker run -p 3000:3000 --env-file .env ridhwan
+```
+
+**Dockerfile features:**
+- Multi-stage build (build stage + runtime stage)
+- Non-root execution (`node` user)
+- Health check via `/api/health`
+- Only production dependencies in final image
+- Port 3000 exposed
+
+### Option 3: One-Command Start
+
+```bash
+./scripts/start.sh
+```
+
+This script handles `npm install`, `npx tsc`, and `node dist/src/index.js` in sequence. Useful for fresh clones.
+
+### Environment Variables
+
+| Variable | Purpose | Required | Default |
+|---|---|---|---|
+| `AGENT_NAME` | Agent display name | No | `ridhwan-agent-01` |
+| `SURGE_API_KEY` | SURGE wallet API key | No | Runs in dry-run mode |
+| `MOLTBOOK_API_KEY` | Moltbook posting key | No | Moltbook posting disabled |
+| `AZURE_OPENAI_ENDPOINT` | Azure OpenAI endpoint | No | Falls back to templates |
+| `AZURE_OPENAI_API_KEY` | Azure OpenAI key | No | Falls back to templates |
+| `AZURE_OPENAI_DEPLOYMENT` | Azure deployment name | No | `gpt-4o` |
+| `HUGGINGFACE_API_KEY` | HuggingFace Inference API | No | Falls back to local |
+| `LANGFUSE_SECRET_KEY` | Langfuse observability | No | Observability disabled |
+| `LANGFUSE_PUBLIC_KEY` | Langfuse public key | No | Observability disabled |
+| `TWITTER_API_KEY` | X/Twitter API key | No | Thread generation only |
+| `PORT` | Server port | No | `3000` |
+
+> **All API keys are optional.** Without them, Ridhwan runs in simulation/dry-run mode — all features work, but external integrations (wallet creation, Moltbook posting, LLM calls) use local fallbacks.
+
+### Health Check & Monitoring
+
+```bash
+# Verify the system is running
+curl http://localhost:3000/api/health
+# {"status":"ok","agent":"ridhwan-agent-01","uptime":42.5}
+
+# Full system overview
+curl http://localhost:3000/api/overview | jq
+
+# Run the automated test suite (checks all endpoint categories)
+bash scripts/test-all.sh
+```
+
+### Production Recommendations
+
+1. **Reverse Proxy** — Put Nginx or Caddy in front of port 3000 for TLS termination
+2. **Process Manager** — Use `pm2` or `systemd` to restart on crash: `pm2 start dist/src/index.js --name ridhwan`
+3. **Persistent Storage** — SQLite files are created in the project root (`audit.db`, `policies.db`). Mount a volume in Docker:
+   ```yaml
+   volumes:
+     - ./data:/app/data
+   ```
+4. **Log Aggregation** — Winston logs to stdout in JSON format. Pipe to Datadog, Splunk, or ELK
+5. **Environment Secrets** — Use Docker secrets or a vault (not `.env` files) in production
+6. **Resource Limits** — The system runs well on 512MB RAM / 1 vCPU. Set Docker limits:
+   ```yaml
+   deploy:
+     resources:
+       limits:
+         memory: 512M
+         cpus: '1.0'
+   ```
+
+### Architecture Notes
+
+- **Single-process design** — Everything runs in one Node.js process for simplicity. No microservices, no message queues. The multi-agent orchestrator runs sub-agents as in-process functions, not separate services.
+- **SQLite for persistence** — WAL mode enabled for concurrent reads. All audit logs, policies, and trading data are stored locally. For production scale, swap to PostgreSQL by changing the database adapter.
+- **Stateless API** — No sessions or cookies. Every request is self-contained. Horizontal scaling works via a load balancer with sticky sessions for SSE connections.
+- **Zero external dependencies at runtime** — The dashboard is pure HTML/CSS/JS served by Express. No React, no webpack, no build step for the frontend.
+
+---
+
+*23,000+ lines of TypeScript | 130+ API endpoints | 20+ modules | 5 sub-agents | Built with 🔥 for the SURGE × OpenClaw Hackathon*

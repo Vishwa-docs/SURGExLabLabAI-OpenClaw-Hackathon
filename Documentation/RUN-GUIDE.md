@@ -1,6 +1,6 @@
 # RIDHWAN — End-to-End Run & Test Guide
 
-> Step-by-step instructions to start the system and verify ALL 100+ API functions
+> Step-by-step instructions to start the system and verify ALL 130+ API functions
 
 ---
 
@@ -43,11 +43,12 @@ Wait for the startup banner:
 ========================================
   RIDHWAN — Enterprise Trust & Commerce Mesh
   API Server:      http://localhost:3000
-  Dashboard:       http://localhost:3001
+  Dashboard:       http://localhost:3000
   Swagger Docs:    http://localhost:3000/api/docs
   SSE Events:      http://localhost:3000/api/events/stream
   MCP Manifest:    http://localhost:3000/api/mcp/manifest
 ========================================
+```
 ```
 
 ---
@@ -631,7 +632,121 @@ curl -s http://localhost:3000/api/skills/scan/demo | jq
 
 ---
 
-## Step 20: Run Built-in Demos
+## Step 20: Test Multi-Agent Orchestrator (Week 6)
+
+```bash
+# List all sub-agents
+curl -s http://localhost:3000/api/orchestrator/agents | jq
+
+# Orchestrator stats
+curl -s http://localhost:3000/api/orchestrator/stats | jq
+
+# Dispatch a task to a sub-agent
+curl -s -X POST http://localhost:3000/api/orchestrator/task \
+  -H "Content-Type: application/json" \
+  -d '{"type": "risk_assessment", "input": {"address": "0x742d35Cc6634C0532925a3b844Bc9e7595f2bD28", "amount": 500}, "priority": "high"}' | jq
+
+# Execute a multi-step pipeline
+curl -s -X POST http://localhost:3000/api/orchestrator/pipeline \
+  -H "Content-Type: application/json" \
+  -d '{"pipeline": "transfer", "description": "Multi-step transfer pipeline", "input": {"to": "0x742d35Cc6634C0532925a3b844Bc9e7595f2bD28", "amount": 100}}' | jq
+
+# View recent tasks
+curl -s http://localhost:3000/api/orchestrator/tasks | jq
+
+# View recent pipelines
+curl -s http://localhost:3000/api/orchestrator/pipelines | jq
+
+# Available pipeline templates
+curl -s http://localhost:3000/api/orchestrator/pipeline-templates | jq
+```
+
+---
+
+## Step 21: Test x402 Autonomous Commerce (Week 6)
+
+```bash
+# List priced resources
+curl -s http://localhost:3000/api/x402/resources | jq
+
+# Commerce stats
+curl -s http://localhost:3000/api/x402/stats | jq
+
+# Create a payment request
+curl -s -X POST http://localhost:3000/api/x402/request \
+  -H "Content-Type: application/json" \
+  -d '{"resourceId": "fraud-scan", "buyerAgent": "agent-002"}' | jq
+
+# Purchase a resource (full flow)
+curl -s -X POST http://localhost:3000/api/x402/purchase \
+  -H "Content-Type: application/json" \
+  -d '{"resourceId": "risk-report", "buyerAgent": "agent-003"}' | jq
+
+# View recent payments
+curl -s http://localhost:3000/api/x402/payments | jq
+
+# View transaction ledger
+curl -s http://localhost:3000/api/x402/transactions | jq
+```
+
+---
+
+## Step 22: Test Trust Delegation (Week 6)
+
+```bash
+# List all capabilities
+curl -s http://localhost:3000/api/trust/capabilities | jq
+
+# View all delegations
+curl -s http://localhost:3000/api/trust/delegations | jq
+
+# Trust system stats
+curl -s http://localhost:3000/api/trust/stats | jq
+
+# Check if an agent has a permission
+curl -s -X POST http://localhost:3000/api/trust/check \
+  -H "Content-Type: application/json" \
+  -d '{"agentId": "risk-guard", "capability": "risk-scan"}' | jq
+
+# View agent's capabilities
+curl -s http://localhost:3000/api/trust/agent/trade-runner/capabilities | jq
+
+# View agent's trust chain
+curl -s http://localhost:3000/api/trust/agent/compliance-ai/chain | jq
+
+# Create a new delegation
+curl -s -X POST http://localhost:3000/api/trust/delegate \
+  -H "Content-Type: application/json" \
+  -d '{"from": "ridhwan-primary", "to": "external-agent-1", "capability": "read-balance", "maxDepth": 1}' | jq
+
+# Revoke a delegation (cascade)
+curl -s -X POST http://localhost:3000/api/trust/revoke \
+  -H "Content-Type: application/json" \
+  -d '{"delegationId": "DELEGATION_ID"}' | jq
+```
+
+---
+
+## Step 23: Test Narrative Moltbook Posts (Week 6)
+
+```bash
+# Generate a narrative post
+curl -s -X POST http://localhost:3000/api/moltbook/narrative \
+  -H "Content-Type: application/json" \
+  -d '{"type": "risk", "style": "dramatic"}' | jq
+
+# Generate an agent-to-agent conversation
+curl -s -X POST http://localhost:3000/api/moltbook/narrative/conversation \
+  -H "Content-Type: application/json" \
+  -d '{"agents": ["risk-guard", "trade-runner"], "topic": "high-value transfer"}' | jq
+
+# View narrative history
+curl -s http://localhost:3000/api/moltbook/narrative/history | jq
+```
+
+---
+
+## Step 24: Run Built-in Demos
 
 ```bash
 # 9-step governance demo (runs without server)
@@ -743,6 +858,28 @@ test_endpoint GET "/api/mcp/manifest" "" "MCP Manifest"
 # Events
 test_endpoint GET "/api/events/stats" "" "Event Stats"
 
+# Orchestrator
+test_endpoint GET "/api/orchestrator/agents" "" "Orchestrator Agents"
+test_endpoint GET "/api/orchestrator/stats" "" "Orchestrator Stats"
+test_endpoint POST "/api/orchestrator/task" '{"type":"risk_assessment","input":{"address":"0xabc"},"priority":"normal"}' "Dispatch Task"
+test_endpoint GET "/api/orchestrator/pipelines" "" "Pipelines"
+
+# x402 Commerce
+test_endpoint GET "/api/x402/resources" "" "x402 Resources"
+test_endpoint GET "/api/x402/stats" "" "x402 Stats"
+test_endpoint POST "/api/x402/purchase" '{"resourceId":"fraud-scan","buyerAgent":"test-agent"}' "x402 Purchase"
+test_endpoint GET "/api/x402/payments" "" "x402 Payments"
+
+# Trust Delegation
+test_endpoint GET "/api/trust/capabilities" "" "Trust Capabilities"
+test_endpoint GET "/api/trust/delegations" "" "Trust Delegations"
+test_endpoint GET "/api/trust/stats" "" "Trust Stats"
+test_endpoint POST "/api/trust/check" '{"agentId":"risk-guard","capability":"risk-scan"}' "Trust Check"
+
+# Narrative
+test_endpoint POST "/api/moltbook/narrative" '{"type":"risk","style":"dramatic"}' "Narrative Post"
+test_endpoint GET "/api/moltbook/narrative/history" "" "Narrative History"
+
 # Analytics
 test_endpoint GET "/api/dashboard/snapshot" "" "Dashboard"
 test_endpoint GET "/api/carbon/report" "" "Carbon Report"
@@ -767,4 +904,4 @@ echo "================================"
 
 ---
 
-*This guide covers all 100+ endpoints across all 17 modules.*
+*This guide covers all 130+ endpoints across all 20+ modules.*

@@ -73,6 +73,22 @@
       </div>
 
       <div class="nav-group">
+        <div class="nav-group-label">Agent Mesh</div>
+        <a href="#orchestrator" class="nav-item" data-section="orchestrator">
+          <span class="nav-icon">🤖</span>
+          <span>Agent Swarm</span>
+        </a>
+        <a href="#x402" class="nav-item" data-section="x402">
+          <span class="nav-icon">💳</span>
+          <span>x402 Commerce</span>
+        </a>
+        <a href="#trust" class="nav-item" data-section="trust">
+          <span class="nav-icon">🔑</span>
+          <span>Trust Delegation</span>
+        </a>
+      </div>
+
+      <div class="nav-group">
         <div class="nav-group-label">Economy</div>
         <a href="#trading" class="nav-item" data-section="trading">
           <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span>
@@ -113,7 +129,7 @@
         <span class="status-dot online"></span>
         <span class="status-text">System Online</span>
       </div>
-      <div class="sidebar-version">v1.0.0 &middot; 17 modules &middot; 100+ endpoints</div>
+      <div class="sidebar-version">v2.0.0 &middot; 20+ modules &middot; 130+ endpoints</div>
     </div>
   </aside>
 
@@ -219,6 +235,33 @@
         <h1 class="section-title">Market Trends &amp; Intelligence</h1>
       </div>
       <div id="trends-content"><div class="skeleton-grid"><div class="skeleton-card"></div><div class="skeleton-card"></div></div></div>
+    </section>
+
+    <section class="section" id="section-orchestrator" style="display:none;">
+      <div class="section-header">
+        <h1 class="section-title">🤖 Multi-Agent Orchestrator</h1>
+        <span class="section-badge">5 Sub-Agents</span>
+      </div>
+      <p class="section-description">Specialized sub-agents coordinated by a central orchestrator. Each agent has a role, capabilities, and trust-scoped permissions. Tasks are auto-routed to the best agent.</p>
+      <div id="orchestrator-content"><div class="skeleton-grid"><div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div></div></div>
+    </section>
+
+    <section class="section" id="section-x402" style="display:none;">
+      <div class="section-header">
+        <h1 class="section-title">💳 x402 Autonomous Commerce</h1>
+        <span class="section-badge success">HTTP 402 Protocol</span>
+      </div>
+      <p class="section-description">Agent-to-agent paid services via the <strong>HTTP 402 Payment Required</strong> protocol. Request → 402 response with price → pay USDC on Base → access granted. No API keys, no subscriptions.</p>
+      <div id="x402-content"><div class="skeleton-grid"><div class="skeleton-card"></div><div class="skeleton-card"></div></div></div>
+    </section>
+
+    <section class="section" id="section-trust" style="display:none;">
+      <div class="section-header">
+        <h1 class="section-title">🔑 Trust Delegation</h1>
+        <span class="section-badge">Permissions Follow People</span>
+      </div>
+      <p class="section-description">Owner delegates capabilities to the primary agent. The agent can delegate <strong>subsets</strong> to sub-agents. Every delegation is auditable and instantly revocable. Trust chains cascade.</p>
+      <div id="trust-content"><div class="skeleton-grid"><div class="skeleton-card"></div><div class="skeleton-card"></div></div></div>
     </section>
   </main>
 

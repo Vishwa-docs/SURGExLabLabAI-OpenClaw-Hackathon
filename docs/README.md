@@ -1,7 +1,7 @@
 # RIDHWAN — Enterprise Trust & Commerce Mesh for Autonomous AI Agents
 
-> **SURGE × lablab.ai Hackathon | 5-Week Sprint**
-> **21,400+ lines of TypeScript | 100+ API endpoints | 17 active modules**
+> **SURGE × lablab.ai Hackathon | 6-Week Sprint**
+> **23,000+ lines of TypeScript | 130+ API endpoints | 20+ active modules | 5 sub-agents**
 
 For the **full project documentation**, see:
 - [**Main README**](../README.md) — Features, tech stack, API endpoints, quick start
@@ -53,7 +53,7 @@ docker compose up --build
 ### Key URLs
 | URL | Description |
 |---|---|
-| http://localhost:3000 | **Web Dashboard** (12 interactive sections) |
+| http://localhost:3000 | **Web Dashboard** (15 interactive sections) |
 | http://localhost:3000/api/health | Health check |
 | http://localhost:3000/api/overview | Full system overview |
 | http://localhost:3000/api/docs | OpenAPI 3.0 / Swagger spec |
@@ -98,6 +98,12 @@ docker compose up --build
 - **SSE Event Hub** — Real-time streaming across 10 categories  
 - **Swagger/OpenAPI** — Full API documentation at `/api/docs`
 - **Moltbook** — Automated daily build updates
+
+### Multi-Agent Mesh (Week 6)
+- **Multi-Agent Orchestrator** — 5 specialized sub-agents with task routing & pipeline execution
+- **x402 Autonomous Commerce** — HTTP 402 protocol for agent-to-agent paid services
+- **Trust Delegation** — Depth-limited capability chains with cascade revocation
+- **LLM Narrative Posts** — Story-driven Moltbook posts & agent-to-agent conversations
 
 ---
 

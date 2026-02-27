@@ -500,8 +500,9 @@ export class MoltbookClient {
         'SURGE (Base L2) Integration',
         'Policy Engine (TypeScript)',
         'SQLite Audit Ledger',
-        'Next.js Governance Dashboard',
-        'x402 Gasless Transactions',
+        'Real-Time Dashboard (HTML/CSS/JS)',
+        'Multi-Agent Orchestrator',
+        'x402 Autonomous Commerce',
       ],
     });
   }

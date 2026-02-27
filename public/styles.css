@@ -1847,3 +1847,31 @@ pre .json-null { color: var(--text-tertiary); }
   0%, 100% { border-color: var(--border); }
   50% { border-color: var(--accent); }
 }
+
+/* ── Agent Swarm Grid ── */
+.agent-swarm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.agent-card {
+  background: var(--surface-secondary);
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+.agent-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+.tag {
+  display: inline-block;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--surface-tertiary);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}

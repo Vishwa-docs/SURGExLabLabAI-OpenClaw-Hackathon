@@ -1,8 +1,8 @@
 # RIDHWAN — Complete Project Documentation
 
 > Enterprise Trust & Commerce Mesh for Autonomous AI Agents  
-> SURGE × lablab.ai Hackathon | 5-Week Sprint  
-> **21,400+ lines of TypeScript | 100+ API endpoints | 17 active modules**
+> SURGE × lablab.ai Hackathon | 6-Week Sprint  
+> **23,000+ lines of TypeScript | 130+ API endpoints | 20+ active modules | 5 sub-agents**
 
 ---
 
@@ -19,6 +19,7 @@ The system provides:
 - **Governance** — Weighted voting, HOLD mechanism, policy hash chains
 - **Web3** — Multi-chain manager (7 chains), smart contract verification, token monitoring, transaction building
 - **Agent-to-Agent** — MCP server for discovery, capability negotiation, and inter-agent communication
+- **Multi-Agent Mesh** — Orchestrator with 5 sub-agents, x402 autonomous commerce, trust delegation chains
 - **Real-time** — SSE event streaming across 10 categories, WebSocket event hub
 - **Market Intelligence** — CoinGecko/DeFiLlama-powered trend analysis with technical indicators
 
@@ -96,9 +97,18 @@ The system provides:
 | Trend Engine | `src/analytics/trend-engine.ts` | ~550 | CoinGecko analysis, RSI/MACD/Bollinger, anomaly detection |
 | Swagger/OpenAPI | `src/api/swagger.ts` | ~350 | Full OpenAPI 3.0 spec for all endpoints |
 
+### 2.6 Multi-Agent Mesh & Autonomous Commerce (Week 6)
+
+| Module | File | LOC | Purpose |
+|---|---|---|---|
+| Multi-Agent Orchestrator | `src/agent/orchestrator.ts` | ~300 | 5 sub-agents (risk-guard, policy-bot, trade-runner, compliance-ai, trust-broker), task routing across 20+ types, pipeline execution for transfers/trades/launches/payments |
+| x402 Commerce Engine | `src/agent/x402-commerce.ts` | ~280 | HTTP 402 protocol for agent-to-agent paid services (6 resources: fraud-scan, risk-report, compliance-packet, contract-verify, market-intel, credit-score), cost-benefit evaluation |
+| Trust Delegation Manager | `src/identity/trust-delegation.ts` | ~280 | Depth-limited capability chains (10 capabilities), owner→primary→sub-agent delegation, cascade revocation, permission verification |
+| Narrative Generator | `src/moltbook/narrative-generator.ts` | ~300 | Story-driven first-person Moltbook posts, 5 narrative types (risk, trade, x402, orchestrator, trust), agent-to-agent conversations, 5 writing styles |
+
 ## 3. API Reference
 
-The Express server exposes **100+ REST endpoints** across these groups. Full OpenAPI 3.0 spec at `GET /api/docs`.
+The Express server exposes **130+ REST endpoints** across these groups. Full OpenAPI 3.0 spec at `GET /api/docs`.
 
 ### Health & Overview
 - `GET /api/health` — System health check
@@ -271,6 +281,40 @@ The Express server exposes **100+ REST endpoints** across these groups. Full Ope
 - `GET /api/events/stats` — Event statistics
 - `POST /api/events/subscribe` — Subscribe to categories
 
+### Multi-Agent Orchestrator (Week 6)
+- `GET /api/orchestrator/agents` — List all sub-agents
+- `GET /api/orchestrator/stats` — Orchestrator statistics
+- `GET /api/orchestrator/tasks` — Recent task history
+- `GET /api/orchestrator/pipelines` — Recent pipeline executions
+- `GET /api/orchestrator/pipeline-templates` — Available pipeline templates
+- `POST /api/orchestrator/task` — Dispatch task to sub-agent
+- `POST /api/orchestrator/pipeline` — Execute multi-step pipeline
+
+### x402 Autonomous Commerce (Week 6)
+- `GET /api/x402/resources` — List priced resources
+- `GET /api/x402/stats` — Commerce statistics
+- `GET /api/x402/payments` — Recent payment history
+- `GET /api/x402/transactions` — Transaction ledger
+- `POST /api/x402/request` — Create payment request
+- `POST /api/x402/pay` — Record a payment
+- `POST /api/x402/verify` — Verify and deliver resource
+- `POST /api/x402/purchase` — Full purchase flow
+
+### Trust Delegation (Week 6)
+- `GET /api/trust/capabilities` — List all capabilities
+- `GET /api/trust/delegations` — View all delegations
+- `GET /api/trust/stats` — Trust system statistics
+- `GET /api/trust/agent/:agentId/capabilities` — Agent's capabilities
+- `GET /api/trust/agent/:agentId/chain` — Agent's trust chain
+- `POST /api/trust/check` — Check permission
+- `POST /api/trust/delegate` — Create delegation
+- `POST /api/trust/revoke` — Revoke delegation (cascade)
+
+### Narrative Moltbook Posts (Week 6)
+- `POST /api/moltbook/narrative` — Generate narrative post
+- `POST /api/moltbook/narrative/conversation` — Generate agent conversation
+- `GET /api/moltbook/narrative/history` — Narrative history
+
 ## 4. Running the System
 
 ### Quick Start
@@ -327,7 +371,7 @@ docker run -p 3000:3000 -p 3001:3001 --env-file .env ridhwan
 | `http://localhost:3000/api/docs` | OpenAPI 3.0 / Swagger spec |
 | `http://localhost:3000/api/events/stream` | SSE real-time event stream |
 | `http://localhost:3000/api/mcp/manifest` | MCP agent manifest |
-| `http://localhost:3001` | Next.js analytics dashboard |
+| `http://localhost:3001` | Legacy dashboard (unused) |
 
 ## 5. Testing Results
 
@@ -365,8 +409,14 @@ docker run -p 3000:3000 -p 3001:3001 --env-file .env ridhwan
 - ✅ SSE Event Hub — real-time streaming across 10 categories
 - ✅ Swagger/OpenAPI — full spec generation at `/api/docs`
 
+### Week 6 Module Verification
+- ✅ Multi-Agent Orchestrator — 5 sub-agents, task routing, pipeline execution
+- ✅ x402 Commerce Engine — 6 priced resources, purchase flow, cost-benefit
+- ✅ Trust Delegation — 10 capabilities, delegation chains, cascade revocation
+- ✅ Narrative Generator — 5 narrative types, agent conversations, storytelling
+
 ### API Endpoints
-All 100+ endpoints tested via curl — returning valid JSON responses
+All 130+ endpoints tested via curl — returning valid JSON responses
 
 ## 6. Prize Track Coverage
 
@@ -379,6 +429,9 @@ All 100+ endpoints tested via curl — returning valid JSON responses
 - **MCP Server** — agent-to-agent discovery, capability negotiation, inter-agent channels
 - **Revenue Sharing** — skill marketplace with 70/20/10 creator/platform/staker splits
 - **Trading Engine** — agent-to-agent order book with leaderboard
+- **Multi-Agent Orchestrator** — 5 sub-agents coordinating autonomously
+- **x402 Autonomous Commerce** — agents buy/sell services via HTTP 402
+- **Trust Delegation** — permission chains that follow people, not software
 
 ### Internet Capital Markets ($10K)
 - Dynamic restaking optimizer across 4 DeFi protocols
@@ -408,6 +461,7 @@ All 100+ endpoints tested via curl — returning valid JSON responses
 - Risk scoring with 7 signals
 - **Prediction Markets** — community-driven forecasting with AMM
 - **Revenue Sharing** — creator incentives via skill marketplace
+- **Multi-Agent Orchestrator** — coordinating 5 agents for governance workflows
 
 ### Moltbook-Native Distribution ($10K)
 - Automated daily Moltbook posting
@@ -416,6 +470,8 @@ All 100+ endpoints tested via curl — returning valid JSON responses
 - DID-based identity for cross-platform trust
 - **MCP Server** — Moltbook-native agent discovery protocol
 - **SSE Event Hub** — real-time activity streaming for Moltbook integration
+- **LLM Narrative Posts** — story-driven first-person Moltbook posts
+- **Agent Conversations** — multi-agent dialogue posts on Moltbook
 
 ## 7. Technology Differentiators
 
@@ -443,6 +499,14 @@ All 100+ endpoints tested via curl — returning valid JSON responses
 
 12. **SOC 2 Type II Mapping** — 30+ controls mapped across all 5 trust service criteria with cross-references to MiCA, SEC, FATF, GDPR, and ISO 27001.
 
+13. **Multi-Agent Orchestrator** — Not just one agent — a swarm of 5 specialized sub-agents (risk-guard, policy-bot, trade-runner, compliance-ai, trust-broker) that automatically route tasks and execute multi-step pipelines.
+
+14. **x402 Autonomous Commerce** — The first implementation of HTTP 402 Payment Required as a protocol for agent-to-agent paid services. Agents evaluate cost-benefit ratios and purchase resources autonomously.
+
+15. **Trust Delegation Chains** — Depth-limited, constraint-scoped capability delegation. Permissions follow people, not software. Cascade revocation ensures security when trust is withdrawn.
+
+16. **LLM Narrative Engine** — Story-driven, first-person agent voice for Moltbook. Agents tell their own stories in dramatic, technical, or reflective styles — making agent activity legible and engaging.
+
 ## 8. Architecture Diagram
 
 ```
@@ -450,13 +514,20 @@ All 100+ endpoints tested via curl — returning valid JSON responses
 │                     RIDHWAN MESH                            │
 │                                                             │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐   │
-│  │ Express  │  │ Next.js  │  │  SSE     │  │  MCP     │   │
-│  │ API :3000│  │ UI :3001 │  │ Events   │  │ Server   │   │
+│  │ Express  │  │Dashboard │  │  SSE     │  │  MCP     │   │
+│  │ API :3000│  │  :3000   │  │ Events   │  │ Server   │   │
 │  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘   │
 │       │              │             │              │         │
 │  ┌────┴──────────────┴─────────────┴──────────────┴────┐   │
+│  │              Multi-Agent Orchestrator                   │   │
+│  │  risk-guard · policy-bot · trade-runner · compliance-ai  │   │
+│  │                   trust-broker                          │   │
+│  └────────────┬────────────────────────────────────────┘   │
+│              │                                              │
+│  ┌────────────┴───────────────────────────────────────┐   │
 │  │                 Core Modules                         │   │
 │  │  Policy Engine │ Risk Scorer │ Audit │ Budget │ HOLD │   │
+│  │  Trust Delegation │ x402 Commerce                    │   │
 │  └────┬──────────────────────────────────────────┬─────┘   │
 │       │                                          │         │
 │  ┌────┴────────────────┐  ┌──────────────────────┴────┐   │
@@ -480,4 +551,4 @@ All 100+ endpoints tested via curl — returning valid JSON responses
 
 ---
 
-*Generated for the SURGE × OpenClaw Hackathon submission — 21,400+ LOC*
+*Generated for the SURGE × OpenClaw Hackathon submission — 23,000+ LOC | 130+ endpoints | 20+ modules*

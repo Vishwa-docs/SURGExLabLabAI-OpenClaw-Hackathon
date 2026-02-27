@@ -366,6 +366,80 @@
         { id: 'act-005', type: 'api_call', description: 'POST to sanctioned.domain/api', amount: 0, currency: '-', usdValue: 0, status: 'blocked', riskScore: 95, executionTime: null, timestamp: Date.now() - 1200000 },
       ],
     },
+
+    orchestrator: {
+      agents: [
+        { id: 'risk-guard', role: 'Risk Assessment', capabilities: ['risk_scan', 'fraud_check', 'address_check'], trustScore: 94, status: 'active', tasksCompleted: 312, avgResponseTime: 45, permissions: ['cap-risk-scan', 'cap-read-balance', 'cap-compliance-audit'], icon: '🛡️' },
+        { id: 'policy-bot', role: 'Policy Enforcement', capabilities: ['policy_check', 'governance_vote', 'compliance_verify'], trustScore: 97, status: 'active', tasksCompleted: 547, avgResponseTime: 32, permissions: ['cap-governance-vote', 'cap-compliance-audit', 'cap-moltbook-post'], icon: '📋' },
+        { id: 'trade-runner', role: 'Trade Execution', capabilities: ['trade_execute', 'swap', 'liquidity_provision'], trustScore: 89, status: 'active', tasksCompleted: 198, avgResponseTime: 78, permissions: ['cap-trade', 'cap-read-balance', 'cap-x402-pay'], icon: '📈' },
+        { id: 'compliance-ai', role: 'Compliance Auditing', capabilities: ['audit_generate', 'soc2_check', 'export_report'], trustScore: 96, status: 'active', tasksCompleted: 423, avgResponseTime: 120, permissions: ['cap-compliance-audit', 'cap-read-balance', 'cap-moltbook-post'], icon: '📑' },
+        { id: 'trust-broker', role: 'Trust & Identity', capabilities: ['did_resolve', 'credential_verify', 'trust_score'], trustScore: 91, status: 'active', tasksCompleted: 267, avgResponseTime: 55, permissions: ['cap-risk-scan', 'cap-read-balance', 'cap-x402-pay', 'cap-moltbook-post'], icon: '🔑' },
+      ],
+      stats: {
+        totalTasks: 1747, completedTasks: 1698, failedTasks: 22, avgResponseTime: 66,
+        tasksByAgent: { 'risk-guard': 312, 'policy-bot': 547, 'trade-runner': 198, 'compliance-ai': 423, 'trust-broker': 267 },
+      },
+      recentTasks: [
+        { id: 'task-001', type: 'risk_scan', assignedTo: 'risk-guard', status: 'completed', result: 'Score: 12/100 — ALLOW', duration: 42, timestamp: Date.now() - 30000 },
+        { id: 'task-002', type: 'policy_check', assignedTo: 'policy-bot', status: 'completed', result: 'All 5 layers passed', duration: 28, timestamp: Date.now() - 60000 },
+        { id: 'task-003', type: 'trade_execute', assignedTo: 'trade-runner', status: 'completed', result: 'BUY 2.5 ETH @ $2,647.50', duration: 95, timestamp: Date.now() - 120000 },
+        { id: 'task-004', type: 'audit_generate', assignedTo: 'compliance-ai', status: 'completed', result: 'SOC 2 packet generated (47 controls)', duration: 180, timestamp: Date.now() - 240000 },
+        { id: 'task-005', type: 'fraud_check', assignedTo: 'risk-guard', status: 'completed', result: 'GNN scan clean — 0 circular flows', duration: 67, timestamp: Date.now() - 360000 },
+        { id: 'task-006', type: 'did_resolve', assignedTo: 'trust-broker', status: 'completed', result: 'DID verified: did:ridhwan:prime-001', duration: 38, timestamp: Date.now() - 480000 },
+      ],
+      pipelines: [
+        { name: 'transfer', steps: ['risk-guard → scan', 'policy-bot → check', 'trade-runner → execute', 'compliance-ai → log'], status: 'completed', duration: 345 },
+        { name: 'x402_payment', steps: ['trust-broker → verify', 'risk-guard → scan', 'policy-bot → approve', 'trade-runner → pay', 'compliance-ai → receipt'], status: 'completed', duration: 420 },
+      ],
+    },
+
+    x402: {
+      stats: {
+        totalRequests: 89, totalPaid: 72, totalRevenue: 247.50, totalSpent: 34.00,
+        avgPaymentTime: 1800, resourcesAccessed: 72, rejectedPayments: 8, activeResources: 6,
+      },
+      resources: [
+        { id: 'res-fraud-scan', endpoint: '/api/x402/fraud-scan', description: 'GNN-powered fraud detection scan', price: 2.00, currency: 'USDC', chain: 'base', category: 'security' },
+        { id: 'res-risk-report', endpoint: '/api/x402/risk-report', description: 'Full 7-signal risk assessment', price: 1.50, currency: 'USDC', chain: 'base', category: 'risk' },
+        { id: 'res-compliance-packet', endpoint: '/api/x402/compliance-packet', description: 'SOC 2 compliance packet', price: 5.00, currency: 'USDC', chain: 'base', category: 'compliance' },
+        { id: 'res-contract-verify', endpoint: '/api/x402/contract-verify', description: 'Smart contract security audit', price: 3.00, currency: 'USDC', chain: 'base', category: 'security' },
+        { id: 'res-market-intel', endpoint: '/api/x402/market-intel', description: 'Premium market intelligence', price: 0.50, currency: 'USDC', chain: 'base', category: 'analytics' },
+        { id: 'res-credit-score', endpoint: '/api/x402/credit-score', description: 'Agent credit score computation', price: 1.00, currency: 'USDC', chain: 'base', category: 'risk' },
+      ],
+      recentPayments: [
+        { id: 'pay-001', resourceId: 'res-fraud-scan', requestingAgent: 'agent-alpha-003', amount: 2.00, status: 'verified', costBenefitScore: 82, txHash: '0x3f2a...8c1d', requestedAt: Date.now() - 120000, resource: { riskScore: 23, flags: 0, analysis: 'No suspicious patterns' } },
+        { id: 'pay-002', resourceId: 'res-market-intel', requestingAgent: 'defi-optimizer-002', amount: 0.50, status: 'verified', costBenefitScore: 91, txHash: '0x7b4e...2f9a', requestedAt: Date.now() - 300000, resource: { rsi: 54.2, trend: 'bullish', anomalies: 0 } },
+        { id: 'pay-003', resourceId: 'res-compliance-packet', requestingAgent: 'compliance-agent-001', amount: 5.00, status: 'verified', costBenefitScore: 75, txHash: '0xa1c8...5d3e', requestedAt: Date.now() - 600000, resource: { sections: 7, controls: 30, soc2Ready: true } },
+        { id: 'pay-004', resourceId: 'res-credit-score', requestingAgent: 'vendor-oracle-007', amount: 1.00, status: 'rejected', costBenefitScore: 35, requestedAt: Date.now() - 900000 },
+      ],
+    },
+
+    trust: {
+      stats: {
+        totalCapabilities: 10, totalDelegations: 6, activeDelegations: 6,
+        revokedDelegations: 0, totalAgents: 6, avgCapabilitiesPerAgent: 3.5,
+      },
+      capabilities: [
+        { id: 'cap-transfer', name: 'Transfer Funds', riskLevel: 'high', maxDelegationDepth: 1 },
+        { id: 'cap-trade', name: 'Execute Trades', riskLevel: 'high', maxDelegationDepth: 1 },
+        { id: 'cap-read-balance', name: 'Read Balance', riskLevel: 'low', maxDelegationDepth: 3 },
+        { id: 'cap-risk-scan', name: 'Risk Scanning', riskLevel: 'low', maxDelegationDepth: 3 },
+        { id: 'cap-contract-deploy', name: 'Deploy Contracts', riskLevel: 'critical', maxDelegationDepth: 0 },
+        { id: 'cap-governance-vote', name: 'Governance Vote', riskLevel: 'medium', maxDelegationDepth: 2 },
+        { id: 'cap-compliance-audit', name: 'Compliance Audit', riskLevel: 'low', maxDelegationDepth: 3 },
+        { id: 'cap-moltbook-post', name: 'Moltbook Post', riskLevel: 'low', maxDelegationDepth: 2 },
+        { id: 'cap-agent-spawn', name: 'Spawn Sub-Agent', riskLevel: 'critical', maxDelegationDepth: 0 },
+        { id: 'cap-x402-pay', name: 'x402 Payment', riskLevel: 'medium', maxDelegationDepth: 1 },
+      ],
+      delegations: [
+        { id: 'del-001', delegator: 'owner:daver', delegate: 'ridhwan-agent-01', capabilities: ['cap-transfer', 'cap-trade', 'cap-read-balance', 'cap-risk-scan', 'cap-governance-vote', 'cap-compliance-audit', 'cap-moltbook-post', 'cap-x402-pay'], depth: 0, status: 'active', constraints: { maxAmount: 10000, dailyLimit: 50000 } },
+        { id: 'del-002', delegator: 'ridhwan-agent-01', delegate: 'risk-guard', capabilities: ['cap-risk-scan', 'cap-read-balance', 'cap-compliance-audit'], depth: 1, status: 'active', constraints: { allowedActions: ['scan', 'assess', 'report'] } },
+        { id: 'del-003', delegator: 'ridhwan-agent-01', delegate: 'trade-runner', capabilities: ['cap-trade', 'cap-read-balance', 'cap-x402-pay'], depth: 1, status: 'active', constraints: { maxAmount: 5000, dailyLimit: 25000 } },
+        { id: 'del-004', delegator: 'ridhwan-agent-01', delegate: 'policy-bot', capabilities: ['cap-governance-vote', 'cap-compliance-audit', 'cap-moltbook-post'], depth: 1, status: 'active', constraints: {} },
+        { id: 'del-005', delegator: 'ridhwan-agent-01', delegate: 'compliance-ai', capabilities: ['cap-compliance-audit', 'cap-read-balance', 'cap-moltbook-post'], depth: 1, status: 'active', constraints: {} },
+        { id: 'del-006', delegator: 'ridhwan-agent-01', delegate: 'trust-broker', capabilities: ['cap-risk-scan', 'cap-read-balance', 'cap-x402-pay', 'cap-moltbook-post'], depth: 1, status: 'active', constraints: { maxAmount: 1000 } },
+      ],
+    },
   };
 
   // ============================================================
@@ -1448,6 +1522,344 @@
     loadSection(section);
   }
 
+  // ── Orchestrator (Agent Swarm) ──────────────────────────────
+  async function loadOrchestrator() {
+    let data;
+    if (DEMO_MODE) {
+      data = DEMO.orchestrator;
+    } else {
+      const [agents, stats, tasks, pipelines] = await Promise.all([
+        api('/api/orchestrator/agents'),
+        api('/api/orchestrator/stats'),
+        api('/api/orchestrator/tasks'),
+        api('/api/orchestrator/pipelines'),
+      ]);
+      data = { agents: agents || [], stats: stats || {}, recentTasks: tasks || [], pipelines: pipelines || [] };
+    }
+    const st = data.stats || {};
+    const container = $('#orchestrator-content');
+
+    container.innerHTML = `
+      <!-- Orchestrator KPIs -->
+      <div class="stat-grid">
+        <div class="stat-card animate-in" style="--stat-accent:var(--purple);--stat-glow:var(--purple-ghost)">
+          <div class="stat-icon">🤖</div>
+          <div class="stat-value">${(data.agents || []).length}</div>
+          <div class="stat-label">Active Sub-Agents</div>
+          <div class="stat-trend up">Coordinated by Orchestrator</div>
+        </div>
+        <div class="stat-card animate-in" style="--stat-accent:var(--blue);--stat-glow:var(--blue-ghost)">
+          <div class="stat-icon">📋</div>
+          <div class="stat-value">${fmt(st.totalTasks)}</div>
+          <div class="stat-label">Tasks Routed</div>
+          <div class="stat-trend up">${fmt(st.completedTasks)} completed</div>
+        </div>
+        <div class="stat-card animate-in" style="--stat-accent:var(--green);--stat-glow:var(--green-ghost)">
+          <div class="stat-icon">⚡</div>
+          <div class="stat-value">${st.avgResponseTime || 0}ms</div>
+          <div class="stat-label">Avg Response Time</div>
+          <div class="stat-trend up">Sub-50ms target</div>
+        </div>
+        <div class="stat-card animate-in" style="--stat-accent:var(--red);--stat-glow:var(--red-ghost)">
+          <div class="stat-icon">❌</div>
+          <div class="stat-value">${st.failedTasks || 0}</div>
+          <div class="stat-label">Failed Tasks</div>
+          <div class="stat-trend down">${st.totalTasks > 0 ? ((st.failedTasks / st.totalTasks) * 100).toFixed(1) : 0}% fail rate</div>
+        </div>
+      </div>
+
+      <!-- Agent Grid -->
+      <h3 class="sub-heading">🤖 Sub-Agent Registry</h3>
+      <div class="agent-swarm-grid">
+        ${(data.agents || []).map(a => `
+          <div class="agent-card" style="border-left: 3px solid var(--accent)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-size:24px">${a.icon || '🤖'}</span>
+                <div>
+                  <strong style="color:var(--text-primary);font-size:14px">${a.id}</strong>
+                  <div style="color:var(--text-tertiary);font-size:11px;text-transform:uppercase;letter-spacing:.5px">${a.role}</div>
+                </div>
+              </div>
+              ${badgeHtml(a.status, a.status === 'active' ? 'green' : 'amber')}
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+              <div style="font-size:11px;color:var(--text-tertiary)">Trust Score</div>
+              <div style="font-size:11px;font-weight:600;color:${a.trustScore >= 90 ? 'var(--green-light)' : 'var(--amber-light)'}">${a.trustScore}/100</div>
+              <div style="font-size:11px;color:var(--text-tertiary)">Tasks Done</div>
+              <div style="font-size:11px;font-weight:600;color:var(--text-primary)">${fmt(a.tasksCompleted)}</div>
+              <div style="font-size:11px;color:var(--text-tertiary)">Avg Response</div>
+              <div style="font-size:11px;font-weight:600;color:var(--text-primary)">${a.avgResponseTime}ms</div>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px">
+              ${(a.capabilities || []).map(c => `<span class="tag">${c}</span>`).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      <!-- Recent Tasks -->
+      <h3 class="sub-heading">📋 Recent Tasks</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Task</th><th>Type</th><th>Agent</th><th>Result</th><th>Time</th><th>When</th></tr></thead>
+          <tbody>
+            ${(data.recentTasks || []).map(t => `
+              <tr>
+                <td><code>${(t.id || '').slice(0, 12)}</code></td>
+                <td>${badgeHtml(t.type, 'blue')}</td>
+                <td><strong>${t.assignedTo}</strong></td>
+                <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis">${t.result || '-'}</td>
+                <td style="font-family:var(--font-mono);font-size:12px">${t.duration}ms</td>
+                <td class="meta">${timeAgo(t.timestamp)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pipelines -->
+      <h3 class="sub-heading">🔗 Execution Pipelines</h3>
+      ${(data.pipelines || []).map(p => `
+        <div class="pipeline-card" style="background:var(--surface-secondary);border-radius:12px;padding:16px;margin-bottom:12px;border:1px solid var(--border)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <strong style="color:var(--text-primary);text-transform:uppercase;font-size:13px;letter-spacing:.5px">${p.name} Pipeline</strong>
+            <div style="display:flex;align-items:center;gap:8px">
+              ${badgeHtml(p.status, p.status === 'completed' ? 'green' : 'amber')}
+              <span class="meta">${p.duration}ms</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+            ${(p.steps || []).map((s, i) => `
+              <span style="font-size:12px;padding:4px 10px;background:var(--surface-tertiary);border-radius:6px;color:var(--text-secondary);font-family:var(--font-mono)">${s}</span>
+              ${i < p.steps.length - 1 ? '<span style="color:var(--accent-light)">→</span>' : ''}
+            `).join('')}
+          </div>
+        </div>
+      `).join('')}
+
+      <!-- Dispatch Task -->
+      <h3 class="sub-heading">🚀 Dispatch Task</h3>
+      <div class="form-card" style="background:var(--surface-secondary);border-radius:12px;padding:20px;border:1px solid var(--border)">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="form-group">
+            <label class="form-label">Task Type</label>
+            <select class="form-input" id="dispatch-task-type">
+              <option value="risk_scan">Risk Scan</option>
+              <option value="fraud_check">Fraud Check</option>
+              <option value="policy_check">Policy Check</option>
+              <option value="trade_execute">Trade Execute</option>
+              <option value="audit_generate">Audit Generate</option>
+              <option value="did_resolve">DID Resolve</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Priority</label>
+            <select class="form-input" id="dispatch-priority">
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+              <option value="low">Low</option>
+              <option value="critical">Critical</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="dispatchTask()" style="margin-top:12px">🤖 Dispatch to Agent Swarm</button>
+      </div>
+    `;
+  }
+
+  // ── x402 Commerce ──────────────────────────────────────────
+  async function loadX402() {
+    let data;
+    if (DEMO_MODE) {
+      data = DEMO.x402;
+    } else {
+      const [stats, resources, payments] = await Promise.all([
+        api('/api/x402/stats'),
+        api('/api/x402/resources'),
+        api('/api/x402/payments'),
+      ]);
+      data = { stats: stats || {}, resources: resources || [], recentPayments: payments || [] };
+    }
+    const st = data.stats || {};
+    const container = $('#x402-content');
+
+    container.innerHTML = `
+      <!-- x402 KPIs -->
+      <div class="stat-grid">
+        <div class="stat-card animate-in" style="--stat-accent:var(--green);--stat-glow:var(--green-ghost)">
+          <div class="stat-icon">💰</div>
+          <div class="stat-value">$${(st.totalRevenue || 0).toFixed(2)}</div>
+          <div class="stat-label">Total Revenue (USDC)</div>
+          <div class="stat-trend up">From ${st.totalPaid || 0} paid requests</div>
+        </div>
+        <div class="stat-card animate-in" style="--stat-accent:var(--blue);--stat-glow:var(--blue-ghost)">
+          <div class="stat-icon">📊</div>
+          <div class="stat-value">${st.totalRequests || 0}</div>
+          <div class="stat-label">Total Requests</div>
+          <div class="stat-trend up">${st.totalPaid || 0} successful payments</div>
+        </div>
+        <div class="stat-card animate-in" style="--stat-accent:var(--purple);--stat-glow:var(--purple-ghost)">
+          <div class="stat-icon">🏪</div>
+          <div class="stat-value">${st.activeResources || 0}</div>
+          <div class="stat-label">Priced Resources</div>
+          <div class="stat-trend up">Agent service marketplace</div>
+        </div>
+        <div class="stat-card animate-in" style="--stat-accent:var(--red);--stat-glow:var(--red-ghost)">
+          <div class="stat-icon">🚫</div>
+          <div class="stat-value">${st.rejectedPayments || 0}</div>
+          <div class="stat-label">Rejected Payments</div>
+          <div class="stat-trend down">Cost-benefit too low</div>
+        </div>
+      </div>
+
+      <!-- x402 Flow Diagram -->
+      <div class="x402-flow" style="background:var(--surface-secondary);border-radius:12px;padding:20px;margin-bottom:24px;border:1px solid var(--border)">
+        <h4 style="color:var(--text-primary);margin-bottom:12px">⚡ x402 Payment Flow</h4>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px">
+          <span style="padding:8px 14px;background:var(--surface-tertiary);border-radius:8px;color:var(--blue-light);border:1px solid var(--blue-ghost)">1. Agent requests resource</span>
+          <span style="color:var(--accent-light);font-size:18px">→</span>
+          <span style="padding:8px 14px;background:var(--surface-tertiary);border-radius:8px;color:var(--amber-light);border:1px solid var(--amber-ghost)">2. Server returns 402 + price</span>
+          <span style="color:var(--accent-light);font-size:18px">→</span>
+          <span style="padding:8px 14px;background:var(--surface-tertiary);border-radius:8px;color:var(--purple-light);border:1px solid var(--purple-ghost)">3. Agent evaluates cost-benefit</span>
+          <span style="color:var(--accent-light);font-size:18px">→</span>
+          <span style="padding:8px 14px;background:var(--surface-tertiary);border-radius:8px;color:var(--green-light);border:1px solid var(--green-ghost)">4. Pay USDC on Base</span>
+          <span style="color:var(--accent-light);font-size:18px">→</span>
+          <span style="padding:8px 14px;background:var(--surface-tertiary);border-radius:8px;color:var(--cyan);border:1px solid rgba(34,211,238,.15)">5. Resource delivered</span>
+        </div>
+      </div>
+
+      <!-- Resource Catalog -->
+      <h3 class="sub-heading">🏪 Priced Resource Catalog</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Resource</th><th>Price</th><th>Chain</th><th>Category</th><th>Action</th></tr></thead>
+          <tbody>
+            ${(data.resources || []).map(r => `
+              <tr>
+                <td><strong>${r.description}</strong><br><code style="font-size:10px;color:var(--text-tertiary)">${r.endpoint}</code></td>
+                <td style="font-weight:700;color:var(--green-light);font-family:var(--font-mono)">$${r.price.toFixed(2)} ${r.currency}</td>
+                <td>${badgeHtml(r.chain, 'blue')}</td>
+                <td>${badgeHtml(r.category, r.category === 'security' ? 'red' : r.category === 'risk' ? 'amber' : 'purple')}</td>
+                <td><button class="btn btn-ghost btn-sm" onclick="purchaseResource('${r.id}')">Purchase</button></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Recent Payments -->
+      <h3 class="sub-heading">💳 Recent x402 Payments</h3>
+      ${(data.recentPayments || []).map(p => `
+        <div class="payment-item" style="background:var(--surface-secondary);border-radius:10px;padding:14px 16px;margin-bottom:8px;border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <strong style="color:var(--text-primary)">${p.resourceId}</strong>
+            <span style="color:var(--text-tertiary);font-size:12px;margin-left:8px">from ${p.requestingAgent}</span>
+            ${p.txHash ? `<div style="font-size:11px;color:var(--text-tertiary);font-family:var(--font-mono);margin-top:4px">tx: ${p.txHash}</div>` : ''}
+          </div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <span style="font-weight:700;color:var(--green-light);font-family:var(--font-mono)">$${p.amount.toFixed(2)}</span>
+            ${badgeHtml(p.status, p.status === 'verified' ? 'green' : p.status === 'rejected' ? 'red' : 'amber')}
+          </div>
+        </div>
+      `).join('')}
+    `;
+  }
+
+  // ── Trust Delegation ────────────────────────────────────────
+  async function loadTrust() {
+    let data;
+    if (DEMO_MODE) {
+      data = DEMO.trust;
+    } else {
+      const [stats, capabilities, delegations] = await Promise.all([
+        api('/api/trust/stats'),
+        api('/api/trust/capabilities'),
+        api('/api/trust/delegations'),
+      ]);
+      data = { stats: stats || {}, capabilities: capabilities || [], delegations: delegations || [] };
+    }
+    const st = data.stats || {};
+    const container = $('#trust-content');
+    const riskColors = { low: 'green', medium: 'amber', high: 'red', critical: 'purple' };
+
+    container.innerHTML = `
+      <!-- Trust KPIs -->
+      <div class="stat-grid">
+        <div class="stat-card animate-in" style="--stat-accent:var(--purple);--stat-glow:var(--purple-ghost)">
+          <div class="stat-icon">🔑</div>
+          <div class="stat-value">${st.totalCapabilities || 0}</div>
+          <div class="stat-label">Trust Capabilities</div>
+          <div class="stat-trend up">Defined in trust registry</div>
+        </div>
+        <div class="stat-card animate-in" style="--stat-accent:var(--green);--stat-glow:var(--green-ghost)">
+          <div class="stat-icon">🔗</div>
+          <div class="stat-value">${st.activeDelegations || 0}</div>
+          <div class="stat-label">Active Delegations</div>
+          <div class="stat-trend up">${st.revokedDelegations || 0} revoked</div>
+        </div>
+        <div class="stat-card animate-in" style="--stat-accent:var(--blue);--stat-glow:var(--blue-ghost)">
+          <div class="stat-icon">🤖</div>
+          <div class="stat-value">${st.totalAgents || 0}</div>
+          <div class="stat-label">Agents with Permissions</div>
+          <div class="stat-trend up">Avg ${st.avgCapabilitiesPerAgent || 0} caps/agent</div>
+        </div>
+        <div class="stat-card animate-in" style="--stat-accent:var(--amber);--stat-glow:var(--amber-ghost)">
+          <div class="stat-icon">📊</div>
+          <div class="stat-value">${st.avgCapabilitiesPerAgent || 0}</div>
+          <div class="stat-label">Avg Capabilities/Agent</div>
+          <div class="stat-trend up">Least-privilege model</div>
+        </div>
+      </div>
+
+      <!-- Trust Chain Visualization -->
+      <h3 class="sub-heading">🔗 Trust Delegation Chain</h3>
+      <div class="trust-chain" style="background:var(--surface-secondary);border-radius:12px;padding:20px;margin-bottom:24px;border:1px solid var(--border)">
+        ${(data.delegations || []).map(d => `
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:10px;background:var(--surface-tertiary);border-radius:8px">
+            <span style="font-size:12px;font-weight:600;color:${d.depth === 0 ? 'var(--cyan)' : 'var(--accent-light)'}">L${d.depth}</span>
+            <span style="font-weight:600;color:var(--text-primary)">${d.delegator}</span>
+            <span style="color:var(--accent-light);font-size:18px">→</span>
+            <span style="font-weight:600;color:var(--text-primary)">${d.delegate}</span>
+            <div style="flex:1;display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end">
+              ${(d.capabilities || []).map(c => `<span class="tag" style="font-size:10px">${c.replace('cap-', '')}</span>`).join('')}
+            </div>
+            ${badgeHtml(d.status, d.status === 'active' ? 'green' : 'red')}
+          </div>
+        `).join('')}
+      </div>
+
+      <!-- Capabilities Registry -->
+      <h3 class="sub-heading">🛡️ Capability Registry</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Capability</th><th>Risk Level</th><th>Max Delegation Depth</th></tr></thead>
+          <tbody>
+            ${(data.capabilities || []).map(c => `
+              <tr>
+                <td><strong>${c.name}</strong> <code style="font-size:10px;color:var(--text-tertiary)">${c.id}</code></td>
+                <td>${badgeHtml(c.riskLevel, riskColors[c.riskLevel] || 'blue')}</td>
+                <td style="font-family:var(--font-mono)">${c.maxDelegationDepth}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Delegation Constraints -->
+      <h3 class="sub-heading">📋 Delegation Constraints</h3>
+      ${(data.delegations || []).filter(d => d.constraints && Object.keys(d.constraints).length > 0).map(d => `
+        <div style="background:var(--surface-secondary);border-radius:10px;padding:14px 16px;margin-bottom:8px;border:1px solid var(--border)">
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+            <strong style="color:var(--text-primary)">${d.delegator} → ${d.delegate}</strong>
+            ${badgeHtml('depth ' + d.depth, 'blue')}
+          </div>
+          <pre style="font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);margin:0;white-space:pre-wrap">${JSON.stringify(d.constraints, null, 2)}</pre>
+        </div>
+      `).join('')}
+    `;
+  }
+
   function loadSection(section) {
     const loaders = {
       overview: loadOverview,
@@ -1462,6 +1874,9 @@
       web3: loadWeb3,
       events: loadEvents,
       trends: loadTrends,
+      orchestrator: loadOrchestrator,
+      x402: loadX402,
+      trust: loadTrust,
     };
     if (loaders[section]) loaders[section]();
   }
@@ -1537,6 +1952,43 @@
     loadSection(currentSection);
   };
 
+  window.dispatchTask = async function () {
+    const taskType = $('#dispatch-task-type')?.value || 'risk_scan';
+    const priority = $('#dispatch-priority')?.value || 'medium';
+    if (DEMO_MODE) {
+      toast(`Dispatching ${taskType} (${priority} priority) to Agent Swarm...`, 'info');
+      setTimeout(() => toast(`Task routed to best agent. Result: completed in 47ms`, 'success'), 800);
+      return;
+    }
+    const result = await api('/api/orchestrator/task', { method: 'POST', body: { taskType, priority } });
+    if (result) toast(`Task ${result.taskId}: ${result.status}`, result.status === 'completed' ? 'success' : 'warning');
+    else toast('Task dispatch failed', 'error');
+  };
+
+  window.purchaseResource = async function (resourceId) {
+    if (DEMO_MODE) {
+      toast(`Initiating x402 purchase: ${resourceId}...`, 'info');
+      setTimeout(() => toast(`402 Payment Required → Evaluating cost-benefit...`, 'info'), 500);
+      setTimeout(() => toast(`Cost-benefit score: 82/100 → Approved. Paying USDC on Base...`, 'info'), 1200);
+      setTimeout(() => toast(`✅ Payment confirmed! Resource delivered. tx: 0x3f2a...8c1d`, 'success'), 2000);
+      return;
+    }
+    const result = await api('/api/x402/purchase', { method: 'POST', body: { resourceId, agentId: 'ridhwan-agent-01', walletBalance: 1000 } });
+    if (result) toast(`x402 ${result.status}: $${result.amount} USDC${result.txHash ? ' tx: ' + result.txHash.slice(0, 10) + '...' : ''}`, result.status === 'verified' ? 'success' : 'warning');
+    else toast('Purchase failed', 'error');
+  };
+
+  window.generateNarrative = async function () {
+    if (DEMO_MODE) {
+      toast('Generating narrative Moltbook post...', 'info');
+      setTimeout(() => toast('📝 Narrative post generated! Story-driven, first-person agent voice with x402, risk, and orchestrator events.', 'success'), 1500);
+      return;
+    }
+    const result = await api('/api/moltbook/narrative', { method: 'POST' });
+    if (result) toast(`Narrative post: "${result.title}"`, 'success');
+    else toast('Narrative generation failed', 'error');
+  };
+
   // Expose to global for HTML onclick
   window._lastLoad = _lastLoad;
   window.loadOverview = loadOverview;
@@ -1595,7 +2047,7 @@
     }, 30000);
 
     console.log('%c🛡️ RIDHWAN Dashboard Initialized', 'color: #6366f1; font-size: 14px; font-weight: bold');
-    console.log(`%cMode: ${DEMO_MODE ? 'DEMO' : 'LIVE'} | Sections: 12 | API Endpoints: 100+`, 'color: #8b95a5');
+    console.log(`%cMode: ${DEMO_MODE ? 'DEMO' : 'LIVE'} | Sections: 15 | API Endpoints: 130+`, 'color: #8b95a5');
   }
 
   // Wait for DOM
