@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RIDHWAN — Enterprise Trust &amp; Commerce Mesh</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+</head>
+<body>
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+      </div>
+      <div>
+        <div class="sidebar-brand-text">RIDHWAN</div>
+        <div class="sidebar-brand-sub">Enterprise Trust Mesh</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-label">Core</div>
+        <a href="#overview" class="nav-item active" data-section="overview">
+          <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+          <span>Overview</span>
+        </a>
+        <a href="#policies" class="nav-item" data-section="policies">
+          <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+          <span>Policies</span>
+        </a>
+        <a href="#actions" class="nav-item" data-section="actions">
+          <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
+          <span>Actions</span>
+        </a>
+        <a href="#audit" class="nav-item" data-section="audit">
+          <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>
+          <span>Audit &amp; Compliance</span>
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-label">Intelligence</div>
+        <a href="#risk" class="nav-item" data-section="risk">
+          <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
+          <span>Risk &amp; Fraud</span>
+        </a>
+        <a href="#governance" class="nav-item" data-section="governance">
+          <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+          <span>Governance</span>
+        </a>
+        <a href="#identity" class="nav-item" data-section="identity">
+          <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+          <span>Identity &amp; MCP</span>
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-label">Agent Mesh</div>
+        <a href="#orchestrator" class="nav-item" data-section="orchestrator">
+          <span class="nav-icon">🤖</span>
+          <span>Agent Swarm</span>
+        </a>
+        <a href="#x402" class="nav-item" data-section="x402">
+          <span class="nav-icon">💳</span>
+          <span>x402 Commerce</span>
+        </a>
+        <a href="#trust" class="nav-item" data-section="trust">
+          <span class="nav-icon">🔑</span>
+          <span>Trust Delegation</span>
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-label">Economy</div>
+        <a href="#trading" class="nav-item" data-section="trading">
+          <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span>
+          <span>Trading</span>
+        </a>
+        <a href="#defi" class="nav-item" data-section="defi">
+          <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
+          <span>DeFi &amp; Yield</span>
+        </a>
+        <a href="#trends" class="nav-item" data-section="trends">
+          <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></span>
+          <span>Market Trends</span>
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-label">Infrastructure</div>
+        <a href="#web3" class="nav-item" data-section="web3">
+          <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>
+          <span>Web3 &amp; Contracts</span>
+        </a>
+        <a href="#events" class="nav-item" data-section="events">
+          <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+          <span>Live Events</span>
+          <span class="nav-badge pulse-badge" id="event-count-badge" style="display:none">0</span>
+        </a>
+      </div>
+    </nav>
+
+    <!-- Demo Mode Toggle -->
+    <div class="demo-toggle-section">
+      <button class="demo-toggle-btn" id="demo-toggle-btn" onclick="toggleDemoMode()" title="Toggle between demo data and live backend">🎭 Demo Data</button>
+      <span class="demo-indicator" id="demo-indicator">DEMO MODE</span>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-status">
+        <span class="status-dot online"></span>
+        <span class="status-text">System Online</span>
+      </div>
+      <div class="sidebar-version">v2.0.0 &middot; 20+ modules &middot; 130+ endpoints</div>
+    </div>
+  </aside>
+
+  <!-- Mobile Toggle -->
+  <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle menu">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <section class="section" id="section-overview" style="display:block;">
+      <div class="section-header">
+        <h1 class="section-title">Dashboard Overview</h1>
+        <div class="section-actions">
+          <span class="last-updated" id="overview-updated"></span>
+          <button class="btn btn-ghost btn-sm" onclick="_lastLoad.overview=0;loadOverview()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Refresh
+          </button>
+        </div>
+      </div>
+      <div id="overview-content"><div class="skeleton-grid"><div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div></div></div>
+    </section>
+
+    <section class="section" id="section-policies" style="display:none;">
+      <div class="section-header">
+        <h1 class="section-title">Policy Engine</h1>
+        <span class="section-badge">5-Layer Enforcement</span>
+      </div>
+      <p class="section-description">Every agent action passes through: <strong>Action Gating</strong> → <strong>Budget Caps</strong> → <strong>Address Allow/Deny</strong> → <strong>Risk Threshold</strong> → <strong>API Domain Validation</strong></p>
+      <div id="policies-content"><div class="skeleton-grid"><div class="skeleton-card tall"></div><div class="skeleton-card tall"></div></div></div>
+    </section>
+
+    <section class="section" id="section-actions" style="display:none;">
+      <div class="section-header">
+        <h1 class="section-title">Agent Actions</h1>
+      </div>
+      <div id="actions-content"><div class="skeleton-grid"><div class="skeleton-card"></div><div class="skeleton-card"></div></div></div>
+    </section>
+
+    <section class="section" id="section-risk" style="display:none;">
+      <div class="section-header">
+        <h1 class="section-title">Risk &amp; Fraud Intelligence</h1>
+        <span class="section-badge danger">Real-time Monitoring</span>
+      </div>
+      <div id="risk-content"><div class="skeleton-grid"><div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div></div></div>
+    </section>
+
+    <section class="section" id="section-trading" style="display:none;">
+      <div class="section-header">
+        <h1 class="section-title">Trading Engine</h1>
+      </div>
+      <div id="trading-content"><div class="skeleton-grid"><div class="skeleton-card tall"></div><div class="skeleton-card"></div></div></div>
+    </section>
+
+    <section class="section" id="section-defi" style="display:none;">
+      <div class="section-header">
+        <h1 class="section-title">DeFi &amp; Yield Aggregation</h1>
+      </div>
+      <div id="defi-content"><div class="skeleton-grid"><div class="skeleton-card"></div><div class="skeleton-card"></div></div></div>
+    </section>
+
+    <section class="section" id="section-governance" style="display:none;">
+      <div class="section-header">
+        <h1 class="section-title">Governance &amp; Voting</h1>
+      </div>
+      <div id="governance-content"><div class="skeleton-grid"><div class="skeleton-card"></div><div class="skeleton-card"></div></div></div>
+    </section>
+
+    <section class="section" id="section-identity" style="display:none;">
+      <div class="section-header">
+        <h1 class="section-title">Identity &amp; Agent Discovery</h1>
+      </div>
+      <div id="identity-content"><div class="skeleton-grid"><div class="skeleton-card"></div><div class="skeleton-card"></div></div></div>
+    </section>
+
+    <section class="section" id="section-audit" style="display:none;">
+      <div class="section-header">
+        <h1 class="section-title">Audit &amp; Compliance</h1>
+        <span class="section-badge success">SOC 2 Type II</span>
+      </div>
+      <div id="audit-content"><div class="skeleton-grid"><div class="skeleton-card tall"></div></div></div>
+    </section>
+
+    <section class="section" id="section-web3" style="display:none;">
+      <div class="section-header">
+        <h1 class="section-title">Web3 &amp; Smart Contracts</h1>
+      </div>
+      <div id="web3-content"><div class="skeleton-grid"><div class="skeleton-card"></div></div></div>
+    </section>
+
+    <section class="section" id="section-events" style="display:none;">
+      <div class="section-header">
+        <h1 class="section-title">Live Event Stream</h1>
+        <span class="live-indicator"><span class="live-dot"></span> LIVE</span>
+      </div>
+      <div id="events-content"><div class="skeleton-grid"><div class="skeleton-card tall"></div></div></div>
+    </section>
+
+    <section class="section" id="section-trends" style="display:none;">
+      <div class="section-header">
+        <h1 class="section-title">Market Trends &amp; Intelligence</h1>
+      </div>
+      <div id="trends-content"><div class="skeleton-grid"><div class="skeleton-card"></div><div class="skeleton-card"></div></div></div>
+    </section>
+
+    <section class="section" id="section-orchestrator" style="display:none;">
+      <div class="section-header">
+        <h1 class="section-title">🤖 Multi-Agent Orchestrator</h1>
+        <span class="section-badge">5 Sub-Agents</span>
+      </div>
+      <p class="section-description">Specialized sub-agents coordinated by a central orchestrator. Each agent has a role, capabilities, and trust-scoped permissions. Tasks are auto-routed to the best agent.</p>
+      <div id="orchestrator-content"><div class="skeleton-grid"><div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div></div></div>
+    </section>
+
+    <section class="section" id="section-x402" style="display:none;">
+      <div class="section-header">
+        <h1 class="section-title">💳 x402 Autonomous Commerce</h1>
+        <span class="section-badge success">HTTP 402 Protocol</span>
+      </div>
+      <p class="section-description">Agent-to-agent paid services via the <strong>HTTP 402 Payment Required</strong> protocol. Request → 402 response with price → pay USDC on Base → access granted. No API keys, no subscriptions.</p>
+      <div id="x402-content"><div class="skeleton-grid"><div class="skeleton-card"></div><div class="skeleton-card"></div></div></div>
+    </section>
+
+    <section class="section" id="section-trust" style="display:none;">
+      <div class="section-header">
+        <h1 class="section-title">🔑 Trust Delegation</h1>
+        <span class="section-badge">Permissions Follow People</span>
+      </div>
+      <p class="section-description">Owner delegates capabilities to the primary agent. The agent can delegate <strong>subsets</strong> to sub-agents. Every delegation is auditable and instantly revocable. Trust chains cascade.</p>
+      <div id="trust-content"><div class="skeleton-grid"><div class="skeleton-card"></div><div class="skeleton-card"></div></div></div>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>
